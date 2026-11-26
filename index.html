@@ -1,0 +1,1968 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cerro Colorado Solar — Empleo, Proveeduría y SAPI</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.25s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes heroCrossfade {
+            0%, 45% { opacity: 0.92; }
+            50%, 95% { opacity: 0; }
+            100% { opacity: 0.92; }
+        }
+        @keyframes heroCrossfadeAlt {
+            0%, 45% { opacity: 0; }
+            50%, 95% { opacity: 0.92; }
+            100% { opacity: 0; }
+        }
+        .hero-slide-1 {
+            animation: heroCrossfade 12s infinite ease-in-out;
+        }
+        .hero-slide-2 {
+            animation: heroCrossfadeAlt 12s infinite ease-in-out;
+        }
+        .nav-btn.active {
+            background-color: #fef3c7;
+            color: #b45309;
+            font-weight: 700;
+        }
+        /* Modo Texto Grande para Accesibilidad Comunitaria */
+        body.large-text-mode {
+            font-size: 1.15rem;
+        }
+        body.large-text-mode p,
+        body.large-text-mode input,
+        body.large-text-mode select,
+        body.large-text-mode textarea,
+        body.large-text-mode label {
+            font-size: 1.1rem !important;
+        }
+    </style>
+</head>
+<body class="bg-sky-50/40 text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Barra Superior de Accesibilidad Comunitaria (Luminosa y Amigable) -->
+    <div class="bg-amber-50 border-b border-amber-200/80 text-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm">
+            <div class="flex items-center gap-2 font-medium text-amber-900">
+                <i class="fa-solid fa-hand-holding-heart text-amber-600"></i>
+                <span>¿Necesitas ayuda para llenar tu registro? Llama o envía WhatsApp gratis al <strong>924 242 2743</strong></span>
+            </div>
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="toggleLargeText()" id="btn-large-text" class="bg-white hover:bg-amber-100 text-slate-800 border border-amber-300 px-3 py-1 rounded-full text-xs font-bold shadow-xs transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-text-height text-amber-600"></i> <span>Letra Más Grande</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header / Navbar Claro y Cercano (estilo cerrocolorado.solar) -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-sky-100 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-2">
+            <!-- Logo Oficial sobre fondo blanco limpio -->
+            <div class="flex items-center shrink-0">
+                <a href="#" onclick="switchTab('home'); return false;" class="flex items-center py-1.5 rounded-xl transition focus:outline-none">
+                    <img src="https://cerrocolorado.solar/airo-assets/images/logo/horizontal" onerror="this.onerror=null; this.src='https://placehold.co/220x56/ffffff/0369a1?text=Cerro+Colorado+Solar';" alt="Planta Solar Cerro Colorado" class="h-10 sm:h-11 w-auto object-contain">
+                </a>
+            </div>
+            
+            <!-- Navigation Tabs (Desktop) -->
+            <nav class="hidden md:flex items-center space-x-1">
+                <button onclick="switchTab('home')" class="nav-btn px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:text-amber-700 hover:bg-amber-50 transition active" data-target="home">
+                    <i class="fa-solid fa-house mr-1.5 text-amber-600"></i> Inicio
+                </button>
+                <button onclick="switchTab('worker-reg')" class="nav-btn px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:text-amber-700 hover:bg-amber-50 transition" data-target="worker-reg">
+                    <i class="fa-solid fa-hard-hat mr-1.5 text-amber-600"></i> Quiero Trabajar
+                </button>
+                <button onclick="switchTab('supplier-reg')" class="nav-btn px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:text-sky-700 hover:bg-sky-50 transition" data-target="supplier-reg">
+                    <i class="fa-solid fa-truck-field mr-1.5 text-sky-600"></i> Soy Proveedor
+                </button>
+                <button onclick="switchTab('status-check')" class="nav-btn px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:text-emerald-700 hover:bg-emerald-50 transition" data-target="status-check">
+                    <i class="fa-solid fa-magnifying-glass mr-1.5 text-emerald-600"></i> Ver Mi Trámite
+                </button>
+                <button onclick="switchTab('project-info')" class="nav-btn px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:text-sky-700 hover:bg-sky-50 transition" data-target="project-info">
+                    <i class="fa-solid fa-solar-panel mr-1.5 text-sky-600"></i> El Proyecto
+                </button>
+                <!-- Botón Buzón de Contacto en menú superior -->
+                <button onclick="goToMailbox()" title="Buzón de Contacto SAPI" aria-label="Buzón de Contacto SAPI" class="ml-1 px-3.5 py-2.5 rounded-xl text-sm font-bold bg-amber-400 hover:bg-amber-500 text-slate-900 shadow-xs transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-envelope-open-text"></i>
+                    <span class="hidden lg:inline">Buzón SAPI</span>
+                </button>
+            </nav>
+
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden flex items-center gap-2">
+                <button onclick="goToMailbox()" aria-label="Buzón de Contacto SAPI" class="bg-amber-100 text-amber-800 p-2.5 rounded-xl font-bold text-xs flex items-center gap-1">
+                    <i class="fa-solid fa-envelope-open-text text-base"></i> Buzón
+                </button>
+                <button id="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Abrir menú" class="text-slate-700 hover:text-amber-700 bg-slate-100 p-2.5 rounded-xl">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-sky-100 px-4 pt-3 pb-5 space-y-1.5 shadow-lg">
+            <button onclick="switchTab('home'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl text-base font-semibold text-slate-800 hover:bg-amber-50 flex items-center gap-3">
+                <i class="fa-solid fa-house w-5 text-amber-600"></i> Inicio
+            </button>
+            <button onclick="switchTab('worker-reg'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl text-base font-semibold text-slate-800 hover:bg-amber-50 flex items-center gap-3">
+                <i class="fa-solid fa-hard-hat w-5 text-amber-600"></i> Quiero Trabajar (Registro)
+            </button>
+            <button onclick="switchTab('supplier-reg'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl text-base font-semibold text-slate-800 hover:bg-sky-50 flex items-center gap-3">
+                <i class="fa-solid fa-truck-field w-5 text-sky-600"></i> Soy Proveedor (Registro)
+            </button>
+            <button onclick="switchTab('status-check'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl text-base font-semibold text-slate-800 hover:bg-emerald-50 flex items-center gap-3">
+                <i class="fa-solid fa-magnifying-glass w-5 text-emerald-600"></i> Ver Estatus de Mi Trámite
+            </button>
+            <button onclick="switchTab('project-info'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl text-base font-semibold text-slate-800 hover:bg-sky-50 flex items-center gap-3">
+                <i class="fa-solid fa-solar-panel w-5 text-sky-600"></i> Información del Proyecto
+            </button>
+            <button onclick="goToMailbox(); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl text-base font-bold text-amber-800 bg-amber-50 flex items-center gap-3">
+                <i class="fa-solid fa-envelope-open-text w-5 text-amber-600"></i> Buzón de Atención SAPI
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow w-full">
+
+        <!-- TAB 1: HOME / PRESENTATION -->
+        <div id="home" class="tab-content active">
+            <!-- Hero Section Full Width Luminoso, Cálido y Natural (Sin grises ni negros) -->
+            <div class="relative w-full bg-sky-900 overflow-hidden shadow-md border-b border-sky-200">
+                <!-- Degradado cálido solar y cielo azul claro sobre las fotos reales -->
+                <div class="absolute inset-0 bg-gradient-to-r from-sky-950/80 via-sky-900/60 to-amber-900/25 z-10"></div>
+                <img src="https://cerrocolorado.solar/airo-assets/images/pages/home/hero" onerror="this.style.display='none'" alt="Cerro Colorado Hero 1" class="hero-slide-1 absolute inset-0 w-full h-full object-cover">
+                <img src="https://i.imgur.com/XehmYYZ.png" onerror="this.style.display='none'" alt="Cerro Colorado Hero 2" class="hero-slide-2 absolute inset-0 w-full h-full object-cover">
+                
+                <div class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-28">
+                    <div class="max-w-2xl space-y-6">
+                        <h2 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight drop-shadow-sm">
+                            Planta Solar <span class="text-amber-300">Cerro Colorado</span>
+                        </h2>
+                        <p class="text-white/95 text-lg sm:text-xl leading-relaxed font-medium drop-shadow-xs">
+                            Si buscas trabajo en la obra o quieres ofrecer tus servicios como proveedor local, aquí puedes registrarte de manera fácil, gratuita y sin intermediarios.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 pt-2">
+                            <button onclick="switchTab('worker-reg')" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold px-7 py-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2.5 text-base sm:text-lg">
+                                <i class="fa-solid fa-hard-hat text-xl"></i> Quiero Registrarme para Trabajar
+                            </button>
+                            <button onclick="switchTab('supplier-reg')" class="bg-white hover:bg-sky-50 text-sky-950 font-bold px-7 py-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2.5 text-base sm:text-lg">
+                                <i class="fa-solid fa-truck-field text-sky-700 text-xl"></i> Registrar mi Negocio / Proveedor
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenedor centrado para el resto de secciones de Inicio -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+
+                <!-- Tarjetas de Acceso Rápido Comunitario (Claras, Grandes y Muy Fáciles de Entender) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div onclick="switchTab('worker-reg')" class="cursor-pointer bg-white hover:bg-amber-50/60 p-7 rounded-3xl shadow-sm border-2 border-amber-200 transition group space-y-4">
+                        <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-105 transition">
+                            <i class="fa-solid fa-helmet-safety"></i>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-slate-900">1. Bolsa de Trabajo Local</h3>
+                        <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
+                            Para albañiles, ayudantes generales, electricistas, choferes y personal de la región. Puedes subir tus documentos o tomarles foto con tu celular.
+                        </p>
+                        <span class="inline-flex items-center gap-2 text-amber-700 font-bold text-sm pt-1">
+                            Ir al registro de trabajo <i class="fa-solid fa-arrow-right"></i>
+                        </span>
+                    </div>
+
+                    <div onclick="switchTab('supplier-reg')" class="cursor-pointer bg-white hover:bg-sky-50/60 p-7 rounded-3xl shadow-sm border-2 border-sky-200 transition group space-y-4">
+                        <div class="w-14 h-14 bg-sky-100 text-sky-600 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-105 transition">
+                            <i class="fa-solid fa-store"></i>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-slate-900">2. Proveedores y Comercios</h3>
+                        <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
+                            Para negocios locales de materiales, alimentos, hospedaje, transporte, ferretería o renta de maquinaria que deseen sumarse al proyecto.
+                        </p>
+                        <span class="inline-flex items-center gap-2 text-sky-700 font-bold text-sm pt-1">
+                            Inscribir mi negocio <i class="fa-solid fa-arrow-right"></i>
+                        </span>
+                    </div>
+
+                    <div onclick="switchTab('status-check')" class="cursor-pointer bg-white hover:bg-emerald-50/60 p-7 rounded-3xl shadow-sm border-2 border-emerald-200 transition group space-y-4">
+                        <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-105 transition">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-slate-900">3. Revisar Mi Solicitud</h3>
+                        <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
+                            ¿Ya dejaste tus datos? Escribe tu número de teléfono o tu CURP para saber cómo va tu proceso de revisión.
+                        </p>
+                        <span class="inline-flex items-center gap-2 text-emerald-700 font-bold text-sm pt-1">
+                            Consultar mi estatus <i class="fa-solid fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Sección de Apoyo Comunitario: SAPI (Sistema de Atención a Partes Interesadas) -->
+                <div class="bg-gradient-to-r from-sky-50 via-white to-amber-50 rounded-3xl p-6 sm:p-10 border-2 border-sky-200 flex flex-col md:flex-row items-center justify-between gap-8 shadow-sm">
+                    <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
+                        <img src="https://i.imgur.com/WVjWQuf.png" onerror="this.style.display='none'" alt="Mascota SAPI Cerro Colorado" class="w-24 h-24 sm:w-28 sm:h-28 object-contain shrink-0 drop-shadow-sm">
+                        <div class="space-y-2.5">
+                            <span class="inline-block bg-sky-100 text-sky-800 border border-sky-200 text-xs px-3.5 py-1 rounded-full font-extrabold uppercase tracking-wide">
+                                SAPI • Sistema de Atención a Partes Interesadas
+                            </span>
+                            <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900">¿No sabes usar formularios o prefieres ayuda directa?</h3>
+                            <p class="text-slate-700 text-sm sm:text-base max-w-2xl leading-relaxed">
+                                No te preocupes si no tienes computadora o tus documentos están escritos a mano. El equipo del <strong>Sistema de Atención a Partes Interesadas (SAPI)</strong> te ayuda paso a paso por teléfono, WhatsApp o en nuestros módulos comunitarios.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row md:flex-col gap-3 shrink-0 w-full sm:w-auto">
+                        <a href="https://wa.me/529242422743?text=Hola%20SAPI,%20necesito%20ayuda%20para%20registrarme%20en%20Cerro%20Colorado." target="_blank" rel="noopener noreferrer" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-3.5 rounded-2xl shadow transition flex items-center justify-center gap-2 whitespace-nowrap">
+                            <i class="fa-brands fa-whatsapp text-xl"></i> Pedir Ayuda por WhatsApp
+                        </a>
+                        <button onclick="switchTab('worker-reg')" class="bg-white hover:bg-amber-50 text-slate-900 border-2 border-amber-400 font-bold px-6 py-3 rounded-2xl transition whitespace-nowrap">
+                            Usar Registro Fácil / Foto
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Home Summary Section: Sobre el Proyecto Cerro Colorado -->
+                <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-sky-100 space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-5">
+                        <div>
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-sky-700">Información Clara y Transparente</span>
+                            <h3 class="text-2xl font-extrabold text-slate-900 mt-1">Conoce el Proyecto Planta Solar Cerro Colorado</h3>
+                        </div>
+                        <button onclick="switchTab('project-info')" class="bg-sky-50 hover:bg-sky-100 text-sky-800 font-bold px-4 py-2.5 rounded-xl text-sm flex items-center gap-2 transition">
+                            Ver toda la información <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-sky-50/70 rounded-2xl p-6 border border-sky-100 space-y-3">
+                            <div class="w-11 h-11 bg-sky-600 text-white rounded-xl flex items-center justify-center text-lg shadow-xs">
+                                <i class="fa-solid fa-building-columns"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-900 text-lg">Proyecto Conjunto con CFE</h4>
+                            <p class="text-sm text-slate-700 leading-relaxed">
+                                Desarrollado entre <strong>Fisterra Energy</strong> y la <strong>Comisión Federal de Electricidad (CFE)</strong>. Tras la construcción y operación conjunta, la planta pasará a ser propiedad 100% de la CFE para beneficio del país.
+                            </p>
+                        </div>
+
+                        <div class="bg-amber-50/70 rounded-2xl p-6 border border-amber-100 space-y-3">
+                            <div class="w-11 h-11 bg-amber-500 text-white rounded-xl flex items-center justify-center text-lg shadow-xs">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-900 text-lg">1,065 Empleos en Construcción</h4>
+                            <p class="text-sm text-slate-700 leading-relaxed">
+                                Se generarán <strong>600 empleos directos y 465 indirectos</strong> durante los 2 años de construcción en Sayula de Alemán y Texistepec, priorizando la contratación y capacitación de mano de obra local.
+                            </p>
+                        </div>
+
+                        <div class="bg-emerald-50/70 rounded-2xl p-6 border border-emerald-100 space-y-3">
+                            <div class="w-11 h-11 bg-emerald-600 text-white rounded-xl flex items-center justify-center text-lg shadow-xs">
+                                <i class="fa-solid fa-seedling"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-900 text-lg">$72.6 MDP en Beneficios Sociales</h4>
+                            <p class="text-sm text-slate-700 leading-relaxed">
+                                Incluye 10 obras y programas acordados con las comunidades: rehabilitación de caminos, agua potable, bombeo solar, talleres de lengua Popoluca y jaranas, y respeto total a sitios arqueológicos del INAH.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN DE CONTACTO / BUZÓN SAPI DIRECTO (Luminoso y Amigable) -->
+                <div id="buzon-contacto" class="bg-white rounded-3xl shadow-sm border-2 border-sky-100 overflow-hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-5">
+                        <!-- Columna Información -->
+                        <div class="lg:col-span-2 bg-gradient-to-br from-sky-800 to-sky-900 text-white p-8 sm:p-10 flex flex-col justify-between space-y-8">
+                            <div class="space-y-4">
+                                <span class="inline-flex items-center gap-2 bg-amber-400 text-slate-950 text-xs font-extrabold px-3.5 py-1 rounded-full">
+                                    <i class="fa-solid fa-envelope-open-text"></i> Buzón SAPI Directo
+                                </span>
+                                <h3 class="text-2xl sm:text-3xl font-extrabold leading-tight">Sistema de Atención a Partes Interesadas</h3>
+                                <p class="text-sky-100 text-sm sm:text-base leading-relaxed">
+                                    ¿Tienes alguna duda, queja, sugerencia o necesitas que te llamemos para ayudarte con tu registro? Escríbenos aquí mismo y nuestro equipo te responderá.
+                                </p>
+                            </div>
+
+                            <div class="space-y-4 text-sm border-t border-sky-700 pt-6">
+                                <div class="flex items-start gap-3">
+                                    <i class="fa-solid fa-phone-volume text-amber-300 text-lg mt-0.5"></i>
+                                    <div>
+                                        <p class="font-bold text-white">Teléfono y WhatsApp SAPI</p>
+                                        <p class="text-sky-100">924 242 2743</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <i class="fa-solid fa-envelope text-amber-300 text-lg mt-0.5"></i>
+                                    <div>
+                                        <p class="font-bold text-white">Correo Electrónico</p>
+                                        <p class="text-sky-100">sapi@cerrocolorado.solar</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <i class="fa-solid fa-location-dot text-amber-300 text-lg mt-0.5"></i>
+                                    <div>
+                                        <p class="font-bold text-white">Comunidades</p>
+                                        <p class="text-sky-100">Sayula de Alemán y Texistepec, Veracruz</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Columna Formulario Buzón -->
+                        <div class="lg:col-span-3 p-8 sm:p-10 bg-white">
+                            <form onsubmit="handleMailboxSubmit(event)" class="space-y-5">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                    <div>
+                                        <label class="block text-sm font-bold text-slate-800 mb-1.5">Tu Nombre Completo *</label>
+                                        <input type="text" id="mb-name" required placeholder="Ej. Pedro Martínez" class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-200 focus:border-sky-500 outline-none text-base">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-bold text-slate-800 mb-1.5">Tu Teléfono (para llamarte) *</label>
+                                        <input type="text" id="mb-contact" required placeholder="Ej. 924 123 4567" class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-200 focus:border-sky-500 outline-none text-base">
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                    <div>
+                                        <label class="block text-sm font-bold text-slate-800 mb-1.5">Tu Comunidad o Municipio *</label>
+                                        <select id="mb-locality" required class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-200 bg-white focus:border-sky-500 outline-none text-base">
+                                            <option value="">Elige tu localidad...</option>
+                                            <option value="Sayula de Alemán">Sayula de Alemán</option>
+                                            <option value="San Isidro">San Isidro</option>
+                                            <option value="Aguilera">Aguilera</option>
+                                            <option value="El Juile">El Juile</option>
+                                            <option value="Texistepec">Texistepec</option>
+                                            <option value="Ojo de Agua / Loma Bonita">Ojo de Agua / Loma Bonita</option>
+                                            <option value="Otra localidad">Otra localidad</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-bold text-slate-800 mb-1.5">¿En qué te ayudamos? *</label>
+                                        <select id="mb-topic" required class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-200 bg-white focus:border-sky-500 outline-none text-base">
+                                            <option value="Necesito ayuda para registrarme">Necesito ayuda para registrarme</option>
+                                            <option value="Duda sobre Empleo">Duda sobre Empleo</option>
+                                            <option value="Consulta de Proveeduría">Consulta de Proveeduría</option>
+                                            <option value="Sugerencia o Solicitud Comunitaria">Sugerencia o Solicitud Comunitaria</option>
+                                            <option value="Reporte de Caminos / Predios">Reporte de Caminos / Predios</option>
+                                            <option value="Queja o Denuncia">Queja o Denuncia</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-800 mb-1.5">Escribe tu mensaje aquí *</label>
+                                    <textarea id="mb-message" rows="3" required placeholder="Cuéntanos tu duda o deja tu número para que te marquemos..." class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-200 focus:border-sky-500 outline-none text-base"></textarea>
+                                </div>
+
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+                                    <p class="text-xs sm:text-sm text-slate-600"><i class="fa-solid fa-shield-halved text-emerald-600 mr-1"></i> Recibirás un número de folio al enviar.</p>
+                                    <button type="submit" class="bg-amber-400 hover:bg-amber-500 text-slate-950 font-extrabold px-8 py-4 rounded-2xl shadow transition flex items-center justify-center gap-2 whitespace-nowrap text-base">
+                                        <i class="fa-solid fa-paper-plane"></i> Enviar Mensaje al SAPI
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TAB 2: WORKER REGISTRATION (MÓDULO A - DISEÑO INCLUSIVO Y ACCESIBLE) -->
+        <div id="worker-reg" class="tab-content max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="bg-white rounded-3xl shadow-sm border-2 border-amber-200 overflow-hidden">
+                <!-- Encabezado cálido y claro -->
+                <div class="bg-gradient-to-r from-amber-400 to-amber-500 px-6 py-8 sm:px-10 text-slate-950">
+                    <span class="bg-white/90 text-amber-900 text-xs font-extrabold px-3.5 py-1 rounded-full uppercase">Bolsa de Trabajo Comunitaria</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold mt-3">Registro para Trabajar en Cerro Colorado</h2>
+                    <p class="text-slate-900 text-sm sm:text-base mt-1 font-medium">Elige la forma que se te haga más fácil para dejar tus datos. Todos los trámites son 100% gratuitos.</p>
+                </div>
+
+                <!-- Selector de Modalidad de Registro (Pensado para accesibilidad comunitaria) -->
+                <div class="bg-amber-50/80 border-b border-amber-200 px-6 py-4 sm:px-10">
+                    <p class="text-xs font-extrabold uppercase tracking-wider text-amber-900 mb-2.5">¿Cómo prefieres registrarte hoy?</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button type="button" id="mode-btn-easy" onclick="setWorkerRegMode('easy')" class="p-3.5 rounded-2xl border-2 border-amber-500 bg-white text-left shadow-xs transition flex items-start gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
+                                <i class="fa-solid fa-camera text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="font-extrabold text-sm text-slate-900">Opción 1: Registro Rápido / Foto</p>
+                                <p class="text-xs text-slate-600 mt-0.5">Solo tu nombre, teléfono y una foto de tu INE o de tu hoja escrita a mano.</p>
+                            </div>
+                        </button>
+
+                        <button type="button" id="mode-btn-full" onclick="setWorkerRegMode('full')" class="p-3.5 rounded-2xl border-2 border-slate-200 bg-white/70 hover:bg-white text-left transition flex items-start gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0 mt-0.5">
+                                <i class="fa-solid fa-file-circle-check text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="font-extrabold text-sm text-slate-900">Opción 2: Expediente Completo</p>
+                                <p class="text-xs text-slate-600 mt-0.5">Captura tu CURP y sube tus 3 documentos (INE, CURP y comprobante).</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <form id="worker-form" onsubmit="handleWorkerSubmit(event)" class="p-6 sm:p-10 space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div class="sm:col-span-2">
+                            <label class="block text-base font-bold text-slate-800 mb-1.5">1. ¿Cuál es tu Nombre Completo? *</label>
+                            <input type="text" id="w-name" required placeholder="Escribe tu nombre y apellidos" class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-300 focus:border-amber-500 outline-none text-base transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-base font-bold text-slate-800 mb-1.5">2. Tu Número de Teléfono (10 dígitos) *</label>
+                            <input type="tel" id="w-phone" required maxlength="10" oninput="validatePhoneInput(this)" placeholder="Ej. 9241234567" class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-300 focus:border-amber-500 outline-none text-base transition">
+                            <p id="phone-feedback" class="text-xs mt-1 text-slate-600">Aquí te llamaremos o enviaremos WhatsApp.</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-base font-bold text-slate-800 mb-1.5">3. ¿De qué Comunidad o Municipio eres? *</label>
+                            <select id="w-municipality" required class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-300 bg-white focus:border-amber-500 outline-none text-base transition">
+                                <option value="">Toca aquí para elegir...</option>
+                                <option value="Sayula de Alemán">Sayula de Alemán (Cabecera)</option>
+                                <option value="San Isidro (Sayula)">San Isidro (Sayula de Alemán)</option>
+                                <option value="Aguilera (Sayula)">Aguilera (Sayula de Alemán)</option>
+                                <option value="El Juile (Sayula)">El Juile (Sayula de Alemán)</option>
+                                <option value="Almagres (Sayula)">Almagres (Sayula de Alemán)</option>
+                                <option value="Texistepec">Texistepec (Cabecera)</option>
+                                <option value="Ojo de Agua (Texistepec)">Ojo de Agua (Texistepec)</option>
+                                <option value="Loma Bonita (Texistepec)">Loma Bonita (Texistepec)</option>
+                                <option value="San Lorenzo Tenochtitlán">San Lorenzo Tenochtitlán</option>
+                                <option value="Otro municipio de la región">Otro municipio de la región</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-base font-bold text-slate-800 mb-1.5">4. ¿Qué sabes hacer? (Oficio) *</label>
+                            <select id="w-trade" required class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-300 bg-white focus:border-amber-500 outline-none text-base transition">
+                                <option value="">Toca aquí para elegir...</option>
+                                <option value="Ayudante General">Ayudante General / Limpieza / Terracerías</option>
+                                <option value="Albañil / Fierrero">Albañil / Fierrero / Obra Civil</option>
+                                <option value="Electricista">Electricista / Instalador de Paneles</option>
+                                <option value="Operador de Maquinaria">Operador de Maquinaria Pesada</option>
+                                <option value="Seguridad e Higiene / Vigilancia">Vigilancia / Seguridad</option>
+                                <option value="Topografía / Cadenero">Topografía / Cadenero</option>
+                                <option value="Chofer / Transporte">Chofer / Transporte</option>
+                                <option value="Soldador / Herrero">Soldador / Herrero</option>
+                                <option value="Otro">Otro oficio</option>
+                            </select>
+                        </div>
+
+                        <!-- Campo CURP (Opcional en modo fácil, obligatorio en modo completo) -->
+                        <div id="curp-field-wrapper">
+                            <label class="block text-base font-bold text-slate-800 mb-1.5">
+                                5. Tu CURP <span id="curp-req-label" class="text-xs font-normal text-slate-500">(Opcional si subes foto de tu INE o hoja)</span>
+                            </label>
+                            <input type="text" id="w-curp" maxlength="18" oninput="validateCURPInput(this)" placeholder="Si la tienes a la mano, escríbela" class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-300 uppercase focus:border-amber-500 outline-none text-base transition">
+                            <p id="curp-feedback" class="text-xs mt-1 text-slate-600">Son 18 letras y números (viene en tu INE o acta).</p>
+                        </div>
+                    </div>
+
+                    <!-- MODO FÁCIL: Subir 1 sola foto (INE o solicitud escrita a mano) -->
+                    <div id="easy-upload-box" class="bg-sky-50/80 border-2 border-sky-200 rounded-2xl p-5 space-y-3">
+                        <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-camera text-sky-600 text-xl"></i> Toma una foto con tu celular (Opcional)
+                        </h3>
+                        <p class="text-sm text-slate-700 leading-relaxed">
+                            Si tienes tu <strong>INE</strong> o escribiste tus datos en una <strong>hoja de cuaderno a mano</strong>, tómale una foto clara y súbela aquí. Si no puedes subirla ahora, igual puedes enviar tu registro y nuestro equipo te contactará.
+                        </p>
+                        <div class="p-4 rounded-2xl border-2 border-dashed border-sky-400 bg-white hover:bg-sky-50 transition">
+                            <input type="file" id="w-doc-easy" accept="image/*,.pdf" capture="environment" onchange="updateFileLabel(this, 'lbl-easy')" class="hidden">
+                            <label for="w-doc-easy" class="cursor-pointer flex flex-col items-center justify-center py-3 text-center">
+                                <i class="fa-solid fa-camera-retro text-3xl text-sky-600 mb-1.5"></i>
+                                <span id="lbl-easy" class="text-sm font-extrabold text-sky-800">Toca aquí para tomar foto o elegir archivo</span>
+                                <span class="text-xs text-slate-500 mt-0.5">Acepta foto de INE, CURP o hoja escrita a mano</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- MODO COMPLETO: 3 Documentos -->
+                    <div id="full-upload-box" class="hidden border-t border-slate-200 pt-6 space-y-4">
+                        <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-file-arrow-up text-amber-600"></i> Carga de Documentos (Foto o PDF)
+                        </h3>
+                        <p class="text-xs text-slate-600">Puedes tomarle foto directa con la cámara de tu celular a cada documento.</p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="p-4 rounded-2xl border-2 border-dashed border-amber-300 hover:border-amber-500 transition bg-amber-50/40">
+                                <label class="block text-xs font-extrabold text-slate-800 mb-2">1. Identificación (INE) *</label>
+                                <input type="file" id="w-doc-ine" accept="image/*,.pdf" onchange="updateFileLabel(this, 'lbl-ine')" class="hidden">
+                                <label for="w-doc-ine" class="cursor-pointer flex flex-col items-center justify-center py-3 text-center">
+                                    <i class="fa-solid fa-id-card text-2xl text-amber-600 mb-1"></i>
+                                    <span id="lbl-ine" class="text-xs font-bold text-amber-800">Tomar Foto o Subir</span>
+                                </label>
+                            </div>
+
+                            <div class="p-4 rounded-2xl border-2 border-dashed border-amber-300 hover:border-amber-500 transition bg-amber-50/40">
+                                <label class="block text-xs font-extrabold text-slate-800 mb-2">2. Formato CURP *</label>
+                                <input type="file" id="w-doc-curp" accept="image/*,.pdf" onchange="updateFileLabel(this, 'lbl-curp')" class="hidden">
+                                <label for="w-doc-curp" class="cursor-pointer flex flex-col items-center justify-center py-3 text-center">
+                                    <i class="fa-solid fa-file-lines text-2xl text-amber-600 mb-1"></i>
+                                    <span id="lbl-curp" class="text-xs font-bold text-amber-800">Tomar Foto o Subir</span>
+                                </label>
+                            </div>
+
+                            <div class="p-4 rounded-2xl border-2 border-dashed border-amber-300 hover:border-amber-500 transition bg-amber-50/40">
+                                <label class="block text-xs font-extrabold text-slate-800 mb-2">3. Comprobante Domicilio *</label>
+                                <input type="file" id="w-doc-address" accept="image/*,.pdf" onchange="updateFileLabel(this, 'lbl-addr')" class="hidden">
+                                <label for="w-doc-address" class="cursor-pointer flex flex-col items-center justify-center py-3 text-center">
+                                    <i class="fa-solid fa-house-chimney text-2xl text-amber-600 mb-1"></i>
+                                    <span id="lbl-addr" class="text-xs font-bold text-amber-800">Tomar Foto o Subir</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 space-y-3">
+                        <button type="submit" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-extrabold py-4 px-6 rounded-2xl shadow-md transition flex items-center justify-center gap-2 text-lg">
+                            <i class="fa-solid fa-check-circle"></i> Enviar Mis Datos Ahora
+                        </button>
+                        <p class="text-center text-xs text-slate-600">
+                            ¿Prefieres que alguien te ayude a llenarlo? Llama o manda WhatsApp al <strong>924 242 2743</strong>.
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- TAB 3: SUPPLIER REGISTRATION (MÓDULO B - LUMINOSO Y ACCESIBLE) -->
+        <div id="supplier-reg" class="tab-content max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="bg-white rounded-3xl shadow-sm border-2 border-sky-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-sky-700 to-sky-800 px-6 py-8 sm:px-10 text-white">
+                    <span class="bg-white/20 text-white text-xs font-extrabold px-3.5 py-1 rounded-full uppercase">Cadena de Suministro Local</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold mt-3">Registro de Proveedores y Negocios</h2>
+                    <p class="text-sky-100 text-sm sm:text-base mt-1">Inscribe tu empresa, comercio o servicio local para participar en las compras de Cerro Colorado.</p>
+                </div>
+
+                <form id="supplier-form" onsubmit="handleSupplierSubmit(event)" class="p-6 sm:p-10 space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div class="sm:col-span-2">
+                            <label class="block text-base font-bold text-slate-800 mb-1.5">Nombre del Negocio o Razón Social *</label>
+                            <input type="text" id="s-company" required placeholder="Ej. Materiales y Construcciones del Istmo" class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-300 focus:border-sky-600 outline-none text-base transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-base font-bold text-slate-800 mb-1.5">RFC (Si cuentas con él)</label>
+                            <input type="text" id="s-rfc" maxlength="13" oninput="this.value = this.value.toUpperCase()" placeholder="Ej. MCI200101ABC" class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-300 uppercase focus:border-sky-600 outline-none text-base transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-base font-bold text-slate-800 mb-1.5">¿Qué producto o servicio ofreces? *</label>
+                            <select id="s-sector" required class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-300 bg-white focus:border-sky-600 outline-none text-base transition">
+                                <option value="">Elige un giro...</option>
+                                <option value="Materiales de Construcción / Agregados">Materiales de Construcción / Agregados</option>
+                                <option value="Renta de Maquinaria y Equipo">Renta de Maquinaria y Equipo</option>
+                                <option value="Transporte de Carga / Pipas de Agua">Transporte de Carga / Pipas de Agua</option>
+                                <option value="Alimentación / Comedores">Alimentación / Comedores</option>
+                                <option value="Hospedaje / Hotelería Local">Hospedaje / Hotelería Local</option>
+                                <option value="Ferretería / Suministros Eléctricos">Ferretería / Suministros Eléctricos</option>
+                                <option value="Gestión de Residuos / Sanitarios">Gestión de Residuos / Sanitarios</option>
+                                <option value="Seguridad Privada / Servicios Médicos">Seguridad Privada / Servicios Médicos</option>
+                                <option value="Otros Servicios">Otros Servicios</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-base font-bold text-slate-800 mb-1.5">Nombre de la Persona de Contacto *</label>
+                            <input type="text" id="s-contact" required placeholder="Ej. Laura Gómez" class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-300 focus:border-sky-600 outline-none text-base transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-base font-bold text-slate-800 mb-1.5">Teléfono de Contacto (10 dígitos) *</label>
+                            <input type="tel" id="s-phone" required maxlength="10" placeholder="9241234567" class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-300 focus:border-sky-600 outline-none text-base transition">
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label class="block text-base font-bold text-slate-800 mb-1.5">Correo Electrónico (Opcional)</label>
+                            <input type="email" id="s-email" placeholder="contacto@tunegocio.com" class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-300 focus:border-sky-600 outline-none text-base transition">
+                        </div>
+                    </div>
+
+                    <!-- Supplier Documents (Flexibles para negocios locales) -->
+                    <div class="border-t border-slate-200 pt-6 space-y-4">
+                        <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-folder-open text-sky-600"></i> Documentación Fiscal y Catálogo (Opcional para pre-registro local)
+                        </h3>
+                        <p class="text-xs sm:text-sm text-slate-600">Si tienes tus documentos en PDF o foto súbelos aquí. Si eres un comercio local en proceso de regularización, igual puedes enviar tu registro.</p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="p-4 rounded-2xl border-2 border-dashed border-sky-300 hover:border-sky-500 transition bg-sky-50/40">
+                                <label class="block text-xs font-extrabold text-slate-800 mb-2">1. Constancia Situación Fiscal</label>
+                                <input type="file" id="s-doc-csf" accept=".pdf,image/*" onchange="updateFileLabel(this, 'lbl-csf')" class="hidden">
+                                <label for="s-doc-csf" class="cursor-pointer flex flex-col items-center justify-center py-3 text-center">
+                                    <i class="fa-solid fa-file-invoice text-2xl text-sky-600 mb-1"></i>
+                                    <span id="lbl-csf" class="text-xs font-bold text-sky-800">Subir PDF o Foto</span>
+                                </label>
+                            </div>
+
+                            <div class="p-4 rounded-2xl border-2 border-dashed border-sky-300 hover:border-sky-500 transition bg-sky-50/40">
+                                <label class="block text-xs font-extrabold text-slate-800 mb-2">2. Opinión Cumplimiento SAT</label>
+                                <input type="file" id="s-doc-sat" accept=".pdf,image/*" onchange="updateFileLabel(this, 'lbl-sat')" class="hidden">
+                                <label for="s-doc-sat" class="cursor-pointer flex flex-col items-center justify-center py-3 text-center">
+                                    <i class="fa-solid fa-file-shield text-2xl text-sky-600 mb-1"></i>
+                                    <span id="lbl-sat" class="text-xs font-bold text-sky-800">Subir PDF o Foto</span>
+                                </label>
+                            </div>
+
+                            <div class="p-4 rounded-2xl border-2 border-dashed border-sky-300 hover:border-sky-500 transition bg-sky-50/40">
+                                <label class="block text-xs font-extrabold text-slate-800 mb-2">3. Catálogo o Lista de Servicios</label>
+                                <input type="file" id="s-doc-cat" accept=".pdf,image/*" onchange="updateFileLabel(this, 'lbl-cat')" class="hidden">
+                                <label for="s-doc-cat" class="cursor-pointer flex flex-col items-center justify-center py-3 text-center">
+                                    <i class="fa-solid fa-book-open text-2xl text-sky-600 mb-1"></i>
+                                    <span id="lbl-cat" class="text-xs font-bold text-sky-800">Subir PDF o Foto</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" class="w-full bg-sky-700 hover:bg-sky-600 text-white font-extrabold py-4 px-6 rounded-2xl shadow-md transition flex items-center justify-center gap-2 text-lg">
+                            <i class="fa-solid fa-check-circle"></i> Registrar mi Negocio
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- TAB 4: STATUS CHECKER (LUMINOSO Y CLARO) -->
+        <div id="status-check" class="tab-content max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="bg-white rounded-3xl shadow-sm border-2 border-emerald-200 p-6 sm:p-10 space-y-6">
+                <div class="text-center space-y-2">
+                    <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mx-auto">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Consulta el Estatus de tu Solicitud</h2>
+                    <p class="text-sm sm:text-base text-slate-600">Escribe tu <strong>número de teléfono a 10 dígitos</strong>, tu CURP o tu RFC para revisar cómo va tu registro.</p>
+                </div>
+
+                <form onsubmit="checkRegistrationStatus(event)" class="flex flex-col sm:flex-row gap-3">
+                    <input type="text" id="search-query" required placeholder="Ej. 9241112233 o tu CURP" class="flex-grow px-4 py-4 rounded-2xl border-2 border-slate-300 uppercase focus:border-emerald-500 outline-none text-base">
+                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-7 py-4 rounded-2xl shadow transition whitespace-nowrap text-base">
+                        Buscar Mi Trámite
+                    </button>
+                </form>
+
+                <!-- Sample Demo Hints -->
+                <div class="bg-sky-50/70 rounded-2xl p-4 border border-sky-200 text-xs sm:text-sm text-slate-700 space-y-1">
+                    <p class="font-bold text-slate-900">Ejemplos para probar consulta rápida:</p>
+                    <p>• Teléfono trabajador: <button type="button" onclick="fillDemoSearch('9241112233')" class="text-sky-700 underline font-mono font-bold">9241112233</button> o CURP: <button type="button" onclick="fillDemoSearch('HERA850412HVZRR01')" class="text-sky-700 underline font-mono font-bold">HERA850412HVZRR01</button></p>
+                    <p>• Proveedor RFC: <button type="button" onclick="fillDemoSearch('MCI210514KL9')" class="text-sky-700 underline font-mono font-bold">MCI210514KL9</button></p>
+                </div>
+
+                <!-- Result Card (Luminoso, sin fondo negro) -->
+                <div id="search-result-card" class="hidden bg-emerald-50 border-2 border-emerald-300 text-slate-900 rounded-2xl p-6 space-y-4 shadow-sm">
+                    <div class="flex justify-between items-start gap-4">
+                        <div>
+                            <span id="res-type" class="text-xs font-extrabold uppercase tracking-wider text-emerald-700">Trabajador</span>
+                            <h3 id="res-name" class="text-xl font-extrabold mt-0.5 text-slate-900">Nombre del Solicitante</h3>
+                            <p id="res-detail" class="text-sm text-slate-600 mt-0.5">Folio: #CC-001 • Sayula de Alemán</p>
+                        </div>
+                        <span id="res-badge" class="px-4 py-1.5 rounded-full text-sm font-extrabold bg-emerald-600 text-white shadow-xs">
+                            Apto
+                        </span>
+                    </div>
+                    <div class="border-t border-emerald-200 pt-3 text-xs sm:text-sm text-slate-700 flex flex-wrap justify-between gap-2">
+                        <span>Última actualización: <strong id="res-date">16/11/2026</strong></span>
+                        <span>Atención SAPI: <strong class="text-emerald-800">924 242 2743</strong></span>
+                    </div>
+                </div>
+
+                <div id="search-not-found" class="hidden text-center py-6 px-4 text-slate-700 text-sm sm:text-base bg-amber-50 rounded-2xl border border-amber-200">
+                    No encontramos un registro con ese número o clave. Si dejaste tus datos en papel o necesitas apoyo, mándanos WhatsApp al <strong>924 242 2743</strong>.
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: INFORMACIÓN DEL PROYECTO (LUMINOSO Y CLARO) -->
+        <div id="project-info" class="tab-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+            <!-- Header Banner Luminoso -->
+            <div class="bg-gradient-to-r from-sky-800 to-sky-900 rounded-3xl p-6 sm:p-10 text-white shadow-md space-y-4">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="bg-amber-400 text-slate-950 text-xs font-extrabold px-3.5 py-1 rounded-full">SENER • CFE • Fisterra Energy</span>
+                    <span class="bg-white/15 text-white text-xs font-medium px-3.5 py-1 rounded-full">Promovente: Desarrollos y Soluciones Energéticas Eirene S. de R.L. de C.V.</span>
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Información Integral del Proyecto</h2>
+                <p class="text-sky-100 text-sm sm:text-base max-w-4xl leading-relaxed">
+                    La <strong>Planta Solar Cerro Colorado</strong> es una central fotovoltaica con sistema de almacenamiento de energía en baterías (SAEE) ubicada en los municipios de <strong>Sayula de Alemán y Texistepec, Veracruz</strong>. Forma parte de las inversiones estratégicas 2026–2030 aprobadas por el Gobierno de México bajo un esquema de desarrollo mixto que garantiza que la infraestructura pase a propiedad de la Comisión Federal de Electricidad (CFE).
+                </p>
+            </div>
+
+            <!-- Trayectoria Fisterra Energy: Carrusel Dinámico Tipo Video de Plantas en Operación -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-sky-100 space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 pb-4">
+                    <div>
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-sky-700">Experiencia Comprobada en México</span>
+                        <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900">Plantas de Fisterra Energy ya en Operación</h3>
+                    </div>
+                    <span class="inline-flex items-center gap-2 bg-amber-100 text-amber-900 text-xs font-extrabold px-3.5 py-1.5 rounded-full">
+                        <span class="w-2 h-2 rounded-full bg-amber-600 animate-ping"></span> Galería en Movimiento
+                    </span>
+                </div>
+
+                <!-- Recuadro Carrusel Tipo Video Rápido -->
+                <div class="relative w-full h-72 sm:h-96 rounded-3xl overflow-hidden shadow-md border-2 border-sky-200 bg-sky-950">
+                    <img id="project-reel-img" src="https://i.imgur.com/jLk8scI.jpeg" onerror="this.onerror=null; this.src='https://placehold.co/1200x500/0369a1/ffffff?text=Fisterra+Energy+Mexico';" alt="Infraestructura Fisterra Energy" class="w-full h-full object-cover transition-opacity duration-300">
+                    
+                    <!-- Overlay luminoso inferior para leer los datos de cada planta -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-sky-950/90 via-sky-950/35 to-transparent flex flex-col justify-end p-6 sm:p-8">
+                        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                            <div class="space-y-1.5 max-w-2xl">
+                                <span id="project-reel-badge" class="inline-block bg-amber-400 text-slate-950 text-xs font-extrabold px-3 py-1 rounded-full uppercase">
+                                    Central en Operación
+                                </span>
+                                <h4 id="project-reel-title" class="text-2xl sm:text-3xl font-extrabold text-white drop-shadow-xs">
+                                    Ventika — 252 MW
+                                </h4>
+                                <p id="project-reel-desc" class="text-sm sm:text-base text-sky-100 font-medium">
+                                    Ventika, parque eólico ubicado en Nuevo León, con capacidad de 252 MW.
+                                </p>
+                            </div>
+                            <!-- Indicadores de avance -->
+                            <div id="project-reel-dots" class="flex items-center gap-1.5 shrink-0"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjetas Resumen de las 5 Plantas Operativas -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs sm:text-sm">
+                    <div class="p-4 rounded-2xl bg-sky-50/80 border border-sky-200 space-y-1">
+                        <span class="font-extrabold text-sky-800 uppercase text-[11px]">Nuevo León • Eólica</span>
+                        <h5 class="font-extrabold text-slate-900 text-base">Ventika</h5>
+                        <p class="text-slate-700 leading-snug">Parque eólico ubicado en Nuevo León, con capacidad de <strong>252 MW</strong>.</p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 space-y-1">
+                        <span class="font-extrabold text-amber-800 uppercase text-[11px]">Sonora • Solar FV</span>
+                        <h5 class="font-extrabold text-slate-900 text-base">San Fernando</h5>
+                        <p class="text-slate-700 leading-snug">Planta solar fotovoltaica en Sonora, con capacidad de <strong>125 MW AC</strong>.</p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 space-y-1">
+                        <span class="font-extrabold text-amber-800 uppercase text-[11px]">Chihuahua • Solar FV</span>
+                        <h5 class="font-extrabold text-slate-900 text-base">Santa María</h5>
+                        <p class="text-slate-700 leading-snug">Planta solar en Chihuahua, con capacidad de <strong>166 MW AC</strong>.</p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 space-y-1">
+                        <span class="font-extrabold text-amber-800 uppercase text-[11px]">Sonora • Solar FV</span>
+                        <h5 class="font-extrabold text-slate-900 text-base">Orejana</h5>
+                        <p class="text-slate-700 leading-snug">Planta solar ubicada en Sonora, con capacidad de <strong>125 MW AC</strong>.</p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-emerald-50/80 border border-emerald-200 space-y-1">
+                        <span class="font-extrabold text-emerald-800 uppercase text-[11px]">Jalisco • Ciclo Combinado</span>
+                        <h5 class="font-extrabold text-slate-900 text-base">Tierra Mojada</h5>
+                        <p class="text-slate-700 leading-snug">Central de generación eléctrica de ciclo combinado en Jalisco, con capacidad de <strong>875 MW</strong>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Esquema Mixto Timeline -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-sky-100 space-y-5">
+                <div class="border-b border-slate-100 pb-4">
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-amber-600">Modelo de Desarrollo</span>
+                    <h3 class="text-xl font-extrabold text-slate-900">Esquema de Desarrollo Mixto y Transferencia a CFE (Horizonte 37 Años)</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-5 rounded-2xl bg-amber-50 border border-amber-200">
+                        <span class="text-xs font-extrabold text-amber-800 uppercase">Años 0 – 2</span>
+                        <h4 class="font-bold text-slate-900 mt-1 text-base">Preparación y Construcción</h4>
+                        <p class="text-xs sm:text-sm text-slate-700 mt-1">Inversión privada estimada de <strong>$8,084 millones de pesos</strong>. Generación pico de 1,065 empleos directos e indirectos y 1,175 inducidos.</p>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-sky-50 border border-sky-200">
+                        <span class="text-xs font-extrabold text-sky-800 uppercase">Años 2 – 17</span>
+                        <h4 class="font-bold text-slate-900 mt-1 text-base">Operación Conjunta (Fisterra / CFE)</h4>
+                        <p class="text-xs sm:text-sm text-slate-700 mt-1">Generación limpia de <strong>820.952 GWh anuales</strong>, mantenimiento especializado del campo solar y del banco de baterías SAEE.</p>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-emerald-50 border border-emerald-200">
+                        <span class="text-xs font-extrabold text-emerald-800 uppercase">Años 17 – 37</span>
+                        <h4 class="font-bold text-slate-900 mt-1 text-base">Transferencia Total a CFE</h4>
+                        <p class="text-xs sm:text-sm text-slate-700 mt-1">La planta y toda su infraestructura eléctrica quedan 100% en manos y operación de la Comisión Federal de Electricidad.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aspectos Técnicos -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-sky-100 space-y-6">
+                <div class="border-b border-slate-100 pb-4">
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-sky-700">Ingeniería y Capacidad</span>
+                    <h3 class="text-xl font-extrabold text-slate-900">Aspectos Técnicos y Componentes Principales</h3>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 text-center">
+                    <div class="p-4 bg-sky-50/70 rounded-2xl border border-sky-100">
+                        <p class="text-xl font-extrabold text-slate-900">621.17 MWp</p>
+                        <p class="text-xs text-slate-600 mt-1">Potencia pico de paneles</p>
+                    </div>
+                    <div class="p-4 bg-amber-50/70 rounded-2xl border border-amber-100">
+                        <p class="text-xl font-extrabold text-amber-700">455.68 MWac</p>
+                        <p class="text-xs text-slate-600 mt-1">Entrega máxima a la red</p>
+                    </div>
+                    <div class="p-4 bg-sky-50/70 rounded-2xl border border-sky-100">
+                        <p class="text-xl font-extrabold text-slate-900">820.95 GWh</p>
+                        <p class="text-xs text-slate-600 mt-1">Generación anual estimada</p>
+                    </div>
+                    <div class="p-4 bg-sky-50/70 rounded-2xl border border-sky-100">
+                        <p class="text-xl font-extrabold text-sky-700">496.5 MWh</p>
+                        <p class="text-xs text-slate-600 mt-1">Almacenamiento baterías SAEE</p>
+                    </div>
+                    <div class="p-4 bg-sky-50/70 rounded-2xl border border-sky-100">
+                        <p class="text-xl font-extrabold text-slate-900">594.99 MWac</p>
+                        <p class="text-xs text-slate-600 mt-1">Salida nominal inversores</p>
+                    </div>
+                    <div class="p-4 bg-emerald-50/70 rounded-2xl border border-emerald-100">
+                        <p class="text-xl font-extrabold text-emerald-700">$8,084 MDP</p>
+                        <p class="text-xs text-slate-600 mt-1">Inversión total estimada</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 pt-2">
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-400 text-slate-950 text-xs font-extrabold">1</span>
+                        <h4 class="font-bold text-sm text-slate-900">941,166 Paneles Solares</h4>
+                        <p class="text-xs text-slate-600">Módulos bifaciales LONGI de 660 Wp (24.4% eficiencia) montados en 11,807 seguidores solares de un eje con separación de 5 m y altura mínima de 0.80 m.</p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-400 text-slate-950 text-xs font-extrabold">2</span>
+                        <h4 class="font-bold text-sm text-slate-900">1,803 Inversores</h4>
+                        <p class="text-xs text-slate-600">Equipos de conversión eléctrica que transforman la corriente directa generada por los módulos fotovoltaicos en corriente alterna.</p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-400 text-slate-950 text-xs font-extrabold">3</span>
+                        <h4 class="font-bold text-sm text-slate-900">97 Contenedores SAEE</h4>
+                        <p class="text-xs text-slate-600">Sistema de Almacenamiento de Energía Eléctrica en baterías de alta seguridad con control térmico y protección contra incendios.</p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-400 text-slate-950 text-xs font-extrabold">4</span>
+                        <h4 class="font-bold text-sm text-slate-900">3 Subestaciones Elevadoras</h4>
+                        <p class="text-xs text-slate-600">Infraestructura para elevar la tensión eléctrica e integrar de forma estable la energía generada al Sistema Eléctrico Nacional.</p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-400 text-slate-950 text-xs font-extrabold">5</span>
+                        <h4 class="font-bold text-sm text-slate-900">Línea de Transmisión</h4>
+                        <p class="text-xs text-slate-600">Tendido de <strong>21.9 km</strong> que conecta las subestaciones elevadoras del proyecto con la Subestación Eléctrica El Juile.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aspectos Ambientales y Patrimonio Arqueológico -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-emerald-100 space-y-4">
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-700">Salvaguardas Ambientales</span>
+                    <h3 class="text-xl font-extrabold text-slate-900">Cuidado del Suelo, Agua y Ganadería</h3>
+                    <ul class="space-y-3 text-xs sm:text-sm text-slate-700">
+                        <li class="flex items-start gap-2.5">
+                            <i class="fa-solid fa-check-circle text-emerald-600 mt-1"></i>
+                            <span><strong>Uso de Suelo:</strong> El 90.4% del predio corresponde a pastizal cultivado previamente utilizado para ganadería extensiva.</span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <i class="fa-solid fa-check-circle text-emerald-600 mt-1"></i>
+                            <span><strong>Protección Hídrica:</strong> Conservación de drenajes naturales, pasos de fauna y respeto al Arroyo Azuzul al poniente, además de desazolve preventivo entre Ojo de Agua y Loma Bonita.</span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <i class="fa-solid fa-check-circle text-emerald-600 mt-1"></i>
+                            <span><strong>Convivencia Rural:</strong> Mantenimiento de cercas, portones, cruces ganaderos y control estricto de polvo, velocidad y horarios de transporte pesado.</span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <i class="fa-solid fa-check-circle text-emerald-600 mt-1"></i>
+                            <span><strong>Estándares Internacionales:</strong> Cumplimiento con Normas de Desempeño IFC (Banco Mundial), Principios del Ecuador, Pacto Mundial de la ONU e ISO 14001 / 45001.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-sky-100 space-y-4">
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-sky-700">Patrimonio Cultural e INAH</span>
+                    <h3 class="text-xl font-extrabold text-slate-900">Resguardo Arqueológico y Consulta Indígena</h3>
+                    <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                        El proyecto se desarrolla en estricto apego a la <strong>Consulta Previa, Libre e Informada</strong> a los pueblos indígenas del área y bajo protocolos del Instituto Nacional de Antropología e Historia (INAH) en la región Olmeca (cercana a San Lorenzo Tenochtitlán y Estero Rabón):
+                    </p>
+                    <div class="space-y-2.5 pt-1">
+                        <div class="p-3.5 rounded-2xl bg-rose-50 border border-rose-200">
+                            <h4 class="font-bold text-xs sm:text-sm text-rose-900"><i class="fa-solid fa-ban mr-1.5"></i> Polígono Restringido INAH</h4>
+                            <p class="text-xs text-rose-800 mt-0.5">Área totalmente excluida de cualquier obra de construcción para la preservación intacta del patrimonio arqueológico.</p>
+                        </div>
+                        <div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-200">
+                            <h4 class="font-bold text-xs sm:text-sm text-amber-900"><i class="fa-solid fa-eye mr-1.5"></i> Polígono con Supervisión Arqueológica</h4>
+                            <p class="text-xs text-amber-800 mt-0.5">Zonas donde toda excavación o movimiento cuenta con acompañamiento permanente de especialistas del INAH y protocolo de detención inmediata ante hallazgos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plan de Gestión Social (PGS) y Beneficios Sociales Compartidos -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-amber-100 space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-amber-600">Inversión Social: $72,600,000 MXN</span>
+                        <h3 class="text-xl font-extrabold text-slate-900">Plan de Gestión Social y Beneficios Sociales Compartidos (BSC)</h3>
+                    </div>
+                    <span class="bg-emerald-100 text-emerald-900 text-xs font-extrabold px-3.5 py-1.5 rounded-full">
+                        $50,820,000 MXN en 10 Propuestas Comunitarias (CEGeL)
+                    </span>
+                </div>
+
+                <p class="text-xs sm:text-sm text-slate-700">
+                    Con seguimiento del <strong>Comité Estratégico de Gestión Local (CEGeL)</strong> y 35 medidas de atención social, el proyecto destina el 1% del CAPEX a obras y programas acordados con las comunidades:
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs sm:text-sm">
+                    <div class="p-3.5 bg-amber-50/60 rounded-2xl border border-amber-200/70 font-semibold text-slate-800 flex items-center gap-2.5">
+                        <i class="fa-solid fa-road text-amber-600"></i> Mejoramiento camino Sayula de Alemán – San Isidro
+                    </div>
+                    <div class="p-3.5 bg-amber-50/60 rounded-2xl border border-amber-200/70 font-semibold text-slate-800 flex items-center gap-2.5">
+                        <i class="fa-solid fa-road text-amber-600"></i> Mejoramiento Aguilera – El Juile y Caminos Ejidales
+                    </div>
+                    <div class="p-3.5 bg-sky-50/60 rounded-2xl border border-sky-200/70 font-semibold text-slate-800 flex items-center gap-2.5">
+                        <i class="fa-solid fa-language text-sky-600"></i> Enseñanza de lengua Popoluca en San Isidro
+                    </div>
+                    <div class="p-3.5 bg-sky-50/60 rounded-2xl border border-sky-200/70 font-semibold text-slate-800 flex items-center gap-2.5">
+                        <i class="fa-solid fa-music text-sky-600"></i> Talleres de Jaranas y Son de Cuerdas
+                    </div>
+                    <div class="p-3.5 bg-sky-50/60 rounded-2xl border border-sky-200/70 font-semibold text-slate-800 flex items-center gap-2.5">
+                        <i class="fa-solid fa-landmark text-sky-600"></i> Espacio cultural de usos múltiples en San Isidro
+                    </div>
+                    <div class="p-3.5 bg-emerald-50/60 rounded-2xl border border-emerald-200/70 font-semibold text-slate-800 flex items-center gap-2.5">
+                        <i class="fa-solid fa-droplet text-emerald-600"></i> Abastecimiento y calidad de agua potable
+                    </div>
+                    <div class="p-3.5 bg-amber-50/60 rounded-2xl border border-amber-200/70 font-semibold text-slate-800 flex items-center gap-2.5">
+                        <i class="fa-solid fa-sun text-amber-600"></i> Sistemas de Bombeo Solar comunitario
+                    </div>
+                    <div class="p-3.5 bg-emerald-50/60 rounded-2xl border border-emerald-200/70 font-semibold text-slate-800 flex items-center gap-2.5">
+                        <i class="fa-solid fa-faucet-drip text-emerald-600"></i> Infraestructura de Saneamiento en San Isidro
+                    </div>
+                    <div class="p-3.5 bg-emerald-50/60 rounded-2xl border border-emerald-200/70 font-semibold text-slate-800 flex items-center gap-2.5">
+                        <i class="fa-solid fa-fire-burner text-emerald-600"></i> Programa de Cocinas de leña eficientes
+                    </div>
+                    <div class="p-3.5 bg-emerald-50/60 rounded-2xl border border-emerald-200/70 font-semibold text-slate-800 flex items-center gap-2.5">
+                        <i class="fa-solid fa-screwdriver-wrench text-emerald-600"></i> Formación en oficios y autoempleo local
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 6: BACKOFFICE FOR FISTERRA TEAM -->
+        <div id="backoffice" class="tab-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+            <div class="bg-gradient-to-r from-sky-800 to-sky-900 text-white rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-md">
+                <div>
+                    <span class="bg-amber-400 text-slate-950 text-xs font-extrabold px-3 py-1 rounded-full uppercase">Backoffice Fisterra Energy</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold mt-2">Panel de Control y Gestión de Solicitudes</h2>
+                    <p class="text-sky-100 text-sm">Administración de fuerza laboral, proveedores, validación documental y bitácora de trazabilidad.</p>
+                </div>
+                <div class="flex items-center gap-2 bg-white/15 px-4 py-2.5 rounded-xl border border-white/20 text-xs">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>Operador: <strong>Equipo Social Fisterra (Amellaly / Paola)</strong></span>
+                </div>
+            </div>
+
+            <!-- Backoffice KPIs -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-sky-100 shadow-sm">
+                    <p class="text-xs text-slate-500 font-bold uppercase">Total Trabajadores</p>
+                    <h4 id="kpi-workers" class="text-3xl font-extrabold text-slate-900 mt-1">0</h4>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-sky-100 shadow-sm">
+                    <p class="text-xs text-slate-500 font-bold uppercase">Total Proveedores</p>
+                    <h4 id="kpi-suppliers" class="text-3xl font-extrabold text-slate-900 mt-1">0</h4>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-sky-100 shadow-sm">
+                    <p class="text-xs text-slate-500 font-bold uppercase">Aptos / Aprobados</p>
+                    <h4 id="kpi-approved" class="text-3xl font-extrabold text-emerald-600 mt-1">0</h4>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-sky-100 shadow-sm">
+                    <p class="text-xs text-slate-500 font-bold uppercase">Pendientes Revisión</p>
+                    <h4 id="kpi-pending" class="text-3xl font-extrabold text-amber-600 mt-1">0</h4>
+                </div>
+            </div>
+
+            <!-- Workers Table -->
+            <div class="bg-white rounded-2xl border border-sky-100 shadow-sm overflow-hidden">
+                <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <h3 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-hard-hat text-amber-500 mr-2"></i> Solicitudes de Trabajadores</h3>
+                    <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                        <select id="filter-w-mun" onchange="renderAdminTables()" class="text-xs px-3 py-2 rounded-lg border border-slate-300 bg-sky-50/50">
+                            <option value="">Todos los Municipios</option>
+                            <option value="Sayula de Alemán">Sayula de Alemán</option>
+                            <option value="San Isidro (Sayula)">San Isidro</option>
+                            <option value="Texistepec">Texistepec</option>
+                            <option value="El Juile (Sayula)">El Juile</option>
+                        </select>
+                        <select id="filter-w-status" onchange="renderAdminTables()" class="text-xs px-3 py-2 rounded-lg border border-slate-300 bg-sky-50/50">
+                            <option value="">Todos los Estatus</option>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="En revisión">En revisión</option>
+                            <option value="Apto">Apto</option>
+                            <option value="Contratado">Contratado</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-sky-50/70 border-b border-slate-200 text-xs uppercase text-slate-600">
+                                <th class="py-3 px-4">Nombre / CURP</th>
+                                <th class="py-3 px-4">Municipio</th>
+                                <th class="py-3 px-4">Oficio</th>
+                                <th class="py-3 px-4">Documentos / Modalidad</th>
+                                <th class="py-3 px-4">Estatus</th>
+                                <th class="py-3 px-4 text-right">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-workers-tbody" class="divide-y divide-slate-100">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Suppliers Table -->
+            <div class="bg-white rounded-2xl border border-sky-100 shadow-sm overflow-hidden">
+                <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <h3 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-truck-field text-sky-600 mr-2"></i> Solicitudes de Proveedores</h3>
+                    <select id="filter-s-status" onchange="renderAdminTables()" class="text-xs px-3 py-2 rounded-lg border border-slate-300 bg-sky-50/50">
+                        <option value="">Todos los Estatus</option>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En revisión">En revisión</option>
+                        <option value="Aprobado">Aprobado</option>
+                        <option value="Rechazado">Rechazado</option>
+                    </select>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-sky-50/70 border-b border-slate-200 text-xs uppercase text-slate-600">
+                                <th class="py-3 px-4">Empresa / RFC</th>
+                                <th class="py-3 px-4">Giro</th>
+                                <th class="py-3 px-4">Contacto</th>
+                                <th class="py-3 px-4">Expediente</th>
+                                <th class="py-3 px-4">Estatus</th>
+                                <th class="py-3 px-4 text-right">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-suppliers-tbody" class="divide-y divide-slate-100">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Audit Log / Trazabilidad -->
+            <div class="bg-white rounded-2xl border border-sky-100 p-5 shadow-sm space-y-3">
+                <h3 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left text-sky-600"></i> Bitácora de Trazabilidad (Últimos movimientos)
+                </h3>
+                <ul id="audit-log-list" class="text-xs text-slate-600 space-y-2 max-h-40 overflow-y-auto">
+                </ul>
+            </div>
+        </div>
+
+        <!-- TAB 7: BUZÓN INTERNO DE QUEJAS Y SUGERENCIAS PARA TRABAJADORES -->
+        <div id="worker-feedback" class="tab-content max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="bg-white rounded-3xl shadow-sm border-2 border-amber-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-sky-800 to-sky-900 px-6 py-8 sm:px-10 text-white">
+                    <span class="bg-amber-400 text-slate-950 text-xs font-extrabold px-3.5 py-1 rounded-full uppercase">Canal Interno de Trabajadores • Código Ético Fisterra</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold mt-3">Buzón de Quejas & Sugerencias</h2>
+                    <p class="text-sky-100 text-sm sm:text-base mt-1 leading-relaxed">
+                        Espacio confidencial y seguro para trabajadores de la obra. Puedes enviar tu reporte identificándote con tu <strong>Número de Trabajador</strong> o de manera <strong>100% Anónima</strong>, sin temor a represalias.
+                    </p>
+                </div>
+
+                <!-- Selector de Modalidad: Con Número de Trabajador o Anónimo -->
+                <div class="bg-sky-50/80 border-b border-sky-100 px-6 py-4 sm:px-10">
+                    <p class="text-xs font-extrabold uppercase tracking-wider text-sky-900 mb-2.5">¿Cómo deseas enviar tu queja o sugerencia?</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button type="button" id="fb-mode-id" onclick="setFeedbackMode('identified')" class="p-3.5 rounded-2xl border-2 border-sky-600 bg-white text-left shadow-xs transition flex items-start gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0 mt-0.5">
+                                <i class="fa-solid fa-id-badge text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="font-extrabold text-sm text-slate-900">Con Número de Trabajador</p>
+                                <p class="text-xs text-slate-600 mt-0.5">Ingresa tu número de identificación laboral para recibir seguimiento directo.</p>
+                            </div>
+                        </button>
+
+                        <button type="button" id="fb-mode-anon" onclick="setFeedbackMode('anonymous')" class="p-3.5 rounded-2xl border-2 border-slate-200 bg-white/70 hover:bg-white text-left transition flex items-start gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
+                                <i class="fa-solid fa-user-secret text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="font-extrabold text-sm text-slate-900">De Manera Anónima</p>
+                                <p class="text-xs text-slate-600 mt-0.5">No se te pedirá nombre ni número de identificación. Total confidencialidad.</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <form id="worker-feedback-form" onsubmit="handleWorkerFeedbackSubmit(event)" class="p-6 sm:p-10 space-y-6">
+                    <!-- Campos de identificación (se ocultan en modo anónimo) -->
+                    <div id="fb-id-fields" class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-800 mb-1.5">Número de Identificación del Trabajador *</label>
+                            <input type="text" id="fb-worker-id" required placeholder="Ej. TR-1045 o CC-W01" class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-300 uppercase focus:border-sky-600 outline-none text-base">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-800 mb-1.5">Nombre Completo (Opcional)</label>
+                            <input type="text" id="fb-worker-name" placeholder="Escribe tu nombre si deseas" class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-300 focus:border-sky-600 outline-none text-base">
+                        </div>
+                    </div>
+
+                    <div id="fb-anon-banner" class="hidden bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center gap-3 text-xs sm:text-sm text-amber-950">
+                        <i class="fa-solid fa-shield-halved text-amber-600 text-xl shrink-0"></i>
+                        <span><strong>Modo Anónimo Activo:</strong> Tu reporte se enviará sin registrar ningún dato personal ni número de empleado.</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-800 mb-1.5">Tipo de Mensaje *</label>
+                            <select id="fb-type" required class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-300 bg-white focus:border-sky-600 outline-none text-base">
+                                <option value="Sugerencia de Mejora">Sugerencia de Mejora en Obra</option>
+                                <option value="Queja Laboral / Trato">Queja Laboral o Trato</option>
+                                <option value="Seguridad e Higiene / EPP">Seguridad e Higiene / Equipo de Protección</option>
+                                <option value="Pagos / Horarios / Transporte">Pagos, Horarios o Transporte</option>
+                                <option value="Denuncia Ética / Anti-acoso">Denuncia Ética / Política Anti-acoso</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-slate-800 mb-1.5">Frente de Trabajo o Área (Opcional)</label>
+                            <select id="fb-area" class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-300 bg-white focus:border-sky-600 outline-none text-base">
+                                <option value="General / No especificado">General / Prefiero no decir</option>
+                                <option value="Campo Fotovoltaico / Seguidores">Campo Fotovoltaico / Seguidores</option>
+                                <option value="Obra Civil / Caminos / Drenajes">Obra Civil / Caminos / Drenajes</option>
+                                <option value="Subestaciones y Línea de Transmisión">Subestaciones y Línea de Transmisión</option>
+                                <option value="Almacén / Transporte / Comedor">Almacén / Transporte / Comedor</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-slate-800 mb-1.5">Describe tu Queja o Sugerencia *</label>
+                        <textarea id="fb-message" rows="4" required placeholder="Explica con claridad lo sucedido o tu propuesta de mejora..." class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-300 focus:border-sky-600 outline-none text-base"></textarea>
+                    </div>
+
+                    <div class="pt-2 space-y-3">
+                        <button type="submit" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-extrabold py-4 px-6 rounded-2xl shadow-md transition flex items-center justify-center gap-2 text-lg">
+                            <i class="fa-solid fa-paper-plane"></i> Enviar al Buzón de Quejas & Sugerencias
+                        </button>
+                        <p class="text-center text-xs text-slate-600">
+                            <i class="fa-solid fa-lock text-emerald-600 mr-1"></i> Protegido por el Código Ético de Fisterra Energy (Cero represalias).
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Floating Action Buttons: Solo Icono Mascota SAPI + WhatsApp (Compactos y sin robar espacio visual) -->
+    <div class="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-2.5">
+        <!-- Ventana de Chat Asistente Virtual SAPI 24/7 -->
+        <div id="sapi-chat-window" class="hidden w-80 sm:w-96 bg-white rounded-3xl shadow-2xl border-2 border-sky-200 overflow-hidden flex-col mb-2">
+            <div class="bg-gradient-to-r from-sky-700 to-sky-800 text-white p-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="https://i.imgur.com/WVjWQuf.png" alt="SAPI" class="w-10 h-10 rounded-full bg-white p-0.5 object-contain shadow">
+                    <div>
+                        <h4 class="font-extrabold text-sm leading-tight">Asistente SAPI</h4>
+                        <p class="text-[11px] text-amber-200 flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Sistema de Atención a Partes Interesadas
+                        </p>
+                    </div>
+                </div>
+                <button onclick="toggleSapiChat()" aria-label="Cerrar asistente" class="text-sky-100 hover:text-white p-1.5 rounded-lg">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div id="sapi-chat-messages" class="p-4 h-72 overflow-y-auto space-y-3 bg-sky-50/40 text-xs sm:text-sm">
+                <div class="bg-white p-3.5 rounded-2xl rounded-tl-none border border-sky-100 text-slate-700 shadow-xs">
+                    ¡Hola! Soy <strong>SAPI</strong> (Sistema de Atención a Partes Interesadas) de la Planta Solar Cerro Colorado. ¿En qué te puedo ayudar hoy?
+                    <ul class="mt-1.5 space-y-1 text-xs text-slate-600 list-disc list-inside">
+                        <li>Cómo registrarte para trabajar (incluso con foto o papel)</li>
+                        <li>Cómo inscribir tu negocio o proveeduría</li>
+                        <li>Dudas sobre la obra y beneficios comunitarios</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Preguntas rápidas -->
+            <div class="px-3 py-2 bg-sky-50 border-t border-sky-100 flex gap-1.5 overflow-x-auto">
+                <button type="button" onclick="askQuickQuestion('¿Cómo me registro si no sé llenar formularios?')" class="text-[11px] bg-white hover:bg-amber-50 text-slate-700 border border-sky-200 px-2.5 py-1 rounded-full whitespace-nowrap transition font-medium">
+                    Ayuda para registrarme
+                </button>
+                <button type="button" onclick="askQuickQuestion('¿Cómo me registro como proveedor local?')" class="text-[11px] bg-white hover:bg-amber-50 text-slate-700 border border-sky-200 px-2.5 py-1 rounded-full whitespace-nowrap transition font-medium">
+                    Registro proveedor
+                </button>
+                <button type="button" onclick="askQuickQuestion('¿Cuántos empleos generará la planta?')" class="text-[11px] bg-white hover:bg-amber-50 text-slate-700 border border-sky-200 px-2.5 py-1 rounded-full whitespace-nowrap transition font-medium">
+                    Empleos del proyecto
+                </button>
+            </div>
+
+            <form onsubmit="handleChatSubmit(event)" class="p-3 bg-white border-t border-sky-100 flex items-center gap-2">
+                <input type="text" id="sapi-chat-input" required placeholder="Escribe tu duda aquí..." class="flex-grow text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-sky-500 outline-none">
+                <button type="submit" aria-label="Enviar pregunta" class="bg-amber-400 hover:bg-amber-500 text-slate-950 w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition font-bold">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Fila de Botones Flotantes Pequeños (Solo Iconos) -->
+        <div class="flex items-center gap-2.5">
+            <!-- Botón Asistente SAPI (Solo imagen oficial, sin letras) -->
+            <button onclick="toggleSapiChat()" title="Asistente SAPI" aria-label="Abrir Asistente SAPI" class="bg-white hover:bg-amber-50 border-2 border-amber-400 w-13 h-13 p-1 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-amber-200">
+                <img src="https://i.imgur.com/WVjWQuf.png" onerror="this.onerror=null; this.src='https://placehold.co/48x48/fbbf24/0f172a?text=SAPI';" alt="SAPI" class="w-11 h-11 object-contain rounded-full">
+            </button>
+
+            <!-- Botón Flotante WhatsApp -->
+            <a href="https://wa.me/529242422743?text=Hola%20SAPI%20Cerro%20Colorado,%20me%20gustar%C3%ADa%20recibir%20informaci%C3%B3n%20o%20asistencia." target="_blank" rel="noopener noreferrer" title="WhatsApp SAPI" aria-label="Contactar por WhatsApp SAPI" class="bg-emerald-500 hover:bg-emerald-600 text-white w-13 h-13 p-3 rounded-full shadow-lg flex items-center justify-center text-2xl transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-200">
+                <i class="fa-brands fa-whatsapp"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Custom Modal Notification (Luminoso y Amigable) -->
+    <div id="custom-modal" class="fixed inset-0 bg-sky-950/50 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 text-center space-y-4 shadow-2xl border-2 border-emerald-200">
+            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 id="modal-title" class="text-xl font-extrabold text-slate-900">¡Registro Exitoso!</h3>
+            <p id="modal-msg" class="text-sm sm:text-base text-slate-700 leading-relaxed">Tu información ha sido guardada correctamente.</p>
+            <button onclick="closeModal()" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-extrabold py-3.5 rounded-2xl transition text-base">
+                Entendido
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer Profesional, Luminoso y Comunitario (Sin fondos negros/grises oscuros) -->
+    <footer class="bg-gradient-to-b from-sky-50 to-sky-100/80 border-t border-sky-200 text-slate-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+                <!-- Columna 1: Identidad y Proyecto -->
+                <div class="space-y-4">
+                    <div class="inline-block bg-white px-3.5 py-2 rounded-2xl shadow-xs border border-sky-100">
+                        <img src="https://cerrocolorado.solar/airo-assets/images/logo/horizontal" onerror="this.onerror=null; this.src='https://placehold.co/200x48/ffffff/0369a1?text=Cerro+Colorado+Solar';" alt="Planta Solar Cerro Colorado" class="h-9 w-auto object-contain">
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        Central fotovoltaica de 488 MWac (621.17 MWp) con almacenamiento en baterías SAEE (496.5 MWh). Proyecto estratégico de desarrollo mixto entre <strong>Fisterra Energy</strong> y la <strong>Comisión Federal de Electricidad (CFE)</strong>.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-2 text-[11px] font-semibold text-sky-900">
+                        <span class="px-2.5 py-1 rounded-lg bg-white border border-sky-200">ISO 14001</span>
+                        <span class="px-2.5 py-1 rounded-lg bg-white border border-sky-200">ISO 45001</span>
+                        <span class="px-2.5 py-1 rounded-lg bg-white border border-sky-200">Pacto Mundial ONU</span>
+                    </div>
+                </div>
+
+                <!-- Columna 2: Accesos Rápidos -->
+                <div class="space-y-3">
+                    <h4 class="text-sm font-extrabold uppercase tracking-wider text-slate-900">Ventanilla Única</h4>
+                    <ul class="space-y-2.5 text-xs sm:text-sm text-slate-600">
+                        <li><button onclick="switchTab('home')" class="hover:text-amber-700 transition flex items-center gap-2 font-medium"><i class="fa-solid fa-chevron-right text-[10px] text-amber-500"></i> Inicio y Resumen</button></li>
+                        <li><button onclick="switchTab('worker-reg')" class="hover:text-amber-700 transition flex items-center gap-2 font-medium"><i class="fa-solid fa-chevron-right text-[10px] text-amber-500"></i> Quiero Trabajar (Registro)</button></li>
+                        <li><button onclick="switchTab('supplier-reg')" class="hover:text-amber-700 transition flex items-center gap-2 font-medium"><i class="fa-solid fa-chevron-right text-[10px] text-amber-500"></i> Registro de Proveedores</button></li>
+                        <li><button onclick="switchTab('status-check')" class="hover:text-amber-700 transition flex items-center gap-2 font-medium"><i class="fa-solid fa-chevron-right text-[10px] text-amber-500"></i> Consultar Estatus de Trámite</button></li>
+                        <li><button onclick="switchTab('project-info')" class="hover:text-amber-700 transition flex items-center gap-2 font-medium"><i class="fa-solid fa-chevron-right text-[10px] text-amber-500"></i> Información Técnica y Social</button></li>
+                    </ul>
+                </div>
+
+                <!-- Columna 3: Atención Comunitaria SAPI -->
+                <div class="space-y-3">
+                    <h4 class="text-sm font-extrabold uppercase tracking-wider text-slate-900">SAPI • Atención a Partes Interesadas</h4>
+                    <ul class="space-y-2.5 text-xs sm:text-sm text-slate-600">
+                        <li class="flex items-start gap-2.5">
+                            <i class="fa-solid fa-phone text-amber-600 mt-1"></i>
+                            <span>Teléfono y WhatsApp:<br><strong class="text-slate-900">924 242 2743</strong></span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <i class="fa-solid fa-envelope text-amber-600 mt-1"></i>
+                            <span>Correo Institucional:<br><strong class="text-slate-900">sapi@cerrocolorado.solar</strong></span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <i class="fa-solid fa-map-pin text-amber-600 mt-1"></i>
+                            <span>Ubicación del Proyecto:<br><strong class="text-slate-900">Sayula de Alemán y Texistepec, Veracruz</strong></span>
+                        </li>
+                        <li class="pt-1 flex flex-col items-start gap-2">
+                            <button onclick="goToMailbox()" class="text-sky-800 hover:text-amber-700 font-bold underline flex items-center gap-1.5">
+                                <i class="fa-solid fa-envelope-open-text"></i> Abrir Buzón de Contacto
+                            </button>
+                            <button onclick="switchTab('worker-feedback')" class="text-amber-800 hover:text-amber-600 font-bold underline flex items-center gap-1.5">
+                                <i class="fa-solid fa-comment-dots"></i> Buzón de Quejas & Sugerencias
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Columna 4: Gobernanza y Salvaguardas -->
+                <div class="space-y-3">
+                    <h4 class="text-sm font-extrabold uppercase tracking-wider text-slate-900">Gobernanza y Ética</h4>
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        Todos los procesos de contratación y proveeduría son gratuitos, transparentes y auditables bajo el Código Ético de Fisterra Energy y las Normas de Desempeño IFC.
+                    </p>
+                    <div class="p-3.5 rounded-2xl bg-white border border-sky-200 text-xs text-slate-600">
+                        <p class="font-bold text-slate-900">Promovente del Proyecto:</p>
+                        <p class="mt-0.5">Desarrollos y Soluciones Energéticas Eirene S. de R.L. de C.V.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Barra Inferior Legal + Acceso Discreto Backoffice -->
+            <div class="border-t border-sky-200/80 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
+                <p>© 2026 Planta Solar Cerro Colorado • Fisterra Energy. Todos los derechos reservados.</p>
+                <div class="flex items-center gap-4">
+                    <span>SENER • CFE • Consulta Previa, Libre e Informada</span>
+                    <button onclick="switchTab('backoffice')" aria-label="Acceso administrativo" class="w-6 h-6 rounded-md bg-white hover:bg-amber-100 text-slate-400 hover:text-amber-700 border border-sky-200 flex items-center justify-center transition">
+                        <i class="fa-solid fa-lock text-[10px]"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Application Script Logic -->
+    <script>
+        let workerRegMode = 'easy';
+        let feedbackMode = 'identified';
+
+        // Carrusel rápido tipo video en sección "El Proyecto"
+        const projectReelSlides = [
+            {
+                img: 'https://i.imgur.com/jLk8scI.jpeg',
+                badge: 'Nuevo León • Energía Eólica',
+                title: 'Ventika — 252 MW',
+                desc: 'Ventika, parque eólico ubicado en Nuevo León, con capacidad de 252 MW.'
+            },
+            {
+                img: 'https://i.imgur.com/76bBREX.jpeg',
+                badge: 'Sonora • Energía Solar Fotovoltaica',
+                title: 'San Fernando — 125 MW AC',
+                desc: 'San Fernando, planta solar fotovoltaica en Sonora, con capacidad de 125 MW AC.'
+            },
+            {
+                img: 'https://i.imgur.com/1xgQKSC.jpeg',
+                badge: 'Chihuahua • Energía Solar Fotovoltaica',
+                title: 'Santa María — 166 MW AC',
+                desc: 'Santa María, planta solar en Chihuahua, con capacidad de 166 MW AC.'
+            },
+            {
+                img: 'https://i.imgur.com/iANk7To.jpeg',
+                badge: 'Sonora • Energía Solar Fotovoltaica',
+                title: 'Orejana — 125 MW AC',
+                desc: 'Orejana, planta solar ubicada en Sonora, con capacidad de 125 MW AC.'
+            },
+            {
+                img: 'https://i.imgur.com/P3pNdSc.jpeg',
+                badge: 'Jalisco • Ciclo Combinado',
+                title: 'Tierra Mojada — 875 MW',
+                desc: 'Tierra Mojada, central de generación eléctrica de ciclo combinado en Jalisco, con capacidad de 875 MW.'
+            },
+            {
+                img: 'https://i.imgur.com/Z3Uifg2.jpeg',
+                badge: 'Portafolio Fisterra Energy México',
+                title: 'Infraestructura Energética Limpia y Confiable',
+                desc: 'Ventika (252 MW), San Fernando (125 MW AC), Santa María (166 MW AC), Orejana (125 MW AC) y Tierra Mojada (875 MW).'
+            },
+            {
+                img: 'https://i.imgur.com/EiB7fsz.jpeg',
+                badge: 'Veracruz • Próximo Proyecto Estratégico',
+                title: 'Planta Solar Cerro Colorado — 488 MWac',
+                desc: 'Continuando la experiencia operativa de Ventika, San Fernando, Santa María, Orejana y Tierra Mojada.'
+            }
+        ];
+
+        let currentReelIndex = 0;
+
+        function startProjectReel() {
+            const imgEl = document.getElementById('project-reel-img');
+            const badgeEl = document.getElementById('project-reel-badge');
+            const titleEl = document.getElementById('project-reel-title');
+            const descEl = document.getElementById('project-reel-desc');
+            const dotsEl = document.getElementById('project-reel-dots');
+            if (!imgEl || !dotsEl) return;
+
+            const renderSlide = (idx) => {
+                const slide = projectReelSlides[idx];
+                imgEl.style.opacity = '0.35';
+                setTimeout(() => {
+                    imgEl.src = slide.img;
+                    badgeEl.textContent = slide.badge;
+                    titleEl.textContent = slide.title;
+                    descEl.textContent = slide.desc;
+                    imgEl.style.opacity = '1';
+                }, 150);
+
+                dotsEl.innerHTML = projectReelSlides.map((_, i) => `
+                    <span class="h-2 rounded-full transition-all ${i === idx ? 'w-6 bg-amber-400' : 'w-2 bg-white/50'}"></span>
+                `).join('');
+            };
+
+            renderSlide(0);
+            setInterval(() => {
+                currentReelIndex = (currentReelIndex + 1) % projectReelSlides.length;
+                renderSlide(currentReelIndex);
+            }, 2400);
+        }
+
+        function setFeedbackMode(mode) {
+            feedbackMode = mode;
+            const btnId = document.getElementById('fb-mode-id');
+            const btnAnon = document.getElementById('fb-mode-anon');
+            const idFields = document.getElementById('fb-id-fields');
+            const anonBanner = document.getElementById('fb-anon-banner');
+            const workerIdInput = document.getElementById('fb-worker-id');
+
+            if (mode === 'identified') {
+                btnId.className = 'p-3.5 rounded-2xl border-2 border-sky-600 bg-white text-left shadow-xs transition flex items-start gap-3';
+                btnAnon.className = 'p-3.5 rounded-2xl border-2 border-slate-200 bg-white/70 hover:bg-white text-left transition flex items-start gap-3';
+                idFields.classList.remove('hidden');
+                anonBanner.classList.add('hidden');
+                workerIdInput.setAttribute('required', 'true');
+            } else {
+                btnAnon.className = 'p-3.5 rounded-2xl border-2 border-amber-500 bg-white text-left shadow-xs transition flex items-start gap-3';
+                btnId.className = 'p-3.5 rounded-2xl border-2 border-slate-200 bg-white/70 hover:bg-white text-left transition flex items-start gap-3';
+                idFields.classList.add('hidden');
+                anonBanner.classList.remove('hidden');
+                workerIdInput.removeAttribute('required');
+            }
+        }
+
+        function handleWorkerFeedbackSubmit(e) {
+            e.preventDefault();
+            const type = document.getElementById('fb-type').value;
+            const area = document.getElementById('fb-area').value;
+            const workerId = feedbackMode === 'identified'
+                ? document.getElementById('fb-worker-id').value.trim().toUpperCase()
+                : 'ANÓNIMO';
+            const folio = 'QS-' + Math.floor(1000 + Math.random() * 9000);
+
+            addAuditLog(`Buzón Interno Quejas/Sugerencias (${folio}) | Origen: ${workerId} | Tipo: ${type} | Área: ${area}`);
+            e.target.reset();
+            setFeedbackMode(feedbackMode);
+
+            showModal(
+                '¡Reporte Recibido Confidencialmente!',
+                `Tu ${type.toLowerCase()} quedó registrada con el folio ${folio} (${feedbackMode === 'identified' ? 'Trabajador: ' + workerId : 'Envío Anónimo'}). Gracias por ayudarnos a mejorar la obra.`
+            );
+        }
+
+        function toggleLargeText() {
+            document.body.classList.toggle('large-text-mode');
+            const btn = document.getElementById('btn-large-text');
+            if (document.body.classList.contains('large-text-mode')) {
+                btn.classList.add('bg-amber-400', 'text-slate-950');
+                btn.querySelector('span').textContent = 'Tamaño Normal';
+            } else {
+                btn.classList.remove('bg-amber-400', 'text-slate-950');
+                btn.querySelector('span').textContent = 'Letra Más Grande';
+            }
+        }
+
+        function setWorkerRegMode(mode) {
+            workerRegMode = mode;
+            const btnEasy = document.getElementById('mode-btn-easy');
+            const btnFull = document.getElementById('mode-btn-full');
+            const easyBox = document.getElementById('easy-upload-box');
+            const fullBox = document.getElementById('full-upload-box');
+            const curpInput = document.getElementById('w-curp');
+            const curpLabel = document.getElementById('curp-req-label');
+
+            if (mode === 'easy') {
+                btnEasy.className = 'p-3.5 rounded-2xl border-2 border-amber-500 bg-white text-left shadow-xs transition flex items-start gap-3';
+                btnFull.className = 'p-3.5 rounded-2xl border-2 border-slate-200 bg-white/70 hover:bg-white text-left transition flex items-start gap-3';
+                easyBox.classList.remove('hidden');
+                fullBox.classList.add('hidden');
+                curpInput.removeAttribute('required');
+                curpLabel.textContent = '(Opcional si subes foto de tu INE o hoja)';
+                ['w-doc-ine', 'w-doc-curp', 'w-doc-address'].forEach(id => document.getElementById(id).removeAttribute('required'));
+            } else {
+                btnFull.className = 'p-3.5 rounded-2xl border-2 border-sky-500 bg-white text-left shadow-xs transition flex items-start gap-3';
+                btnEasy.className = 'p-3.5 rounded-2xl border-2 border-slate-200 bg-white/70 hover:bg-white text-left transition flex items-start gap-3';
+                fullBox.classList.remove('hidden');
+                easyBox.classList.add('hidden');
+                curpInput.setAttribute('required', 'true');
+                curpLabel.textContent = '* (18 caracteres)';
+                ['w-doc-ine', 'w-doc-curp', 'w-doc-address'].forEach(id => document.getElementById(id).setAttribute('required', 'true'));
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function goToMailbox() {
+            switchTab('home');
+            setTimeout(() => {
+                const mailbox = document.getElementById('buzon-contacto');
+                if (mailbox) {
+                    mailbox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        }
+
+        function handleMailboxSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('mb-name').value.trim();
+            const locality = document.getElementById('mb-locality').value;
+            const topic = document.getElementById('mb-topic').value;
+            const folio = 'SAPI-' + Math.floor(1000 + Math.random() * 9000);
+            addAuditLog(`Nuevo mensaje en Buzón SAPI (${folio}) de ${name} (${locality}) - Tema: ${topic}`);
+            e.target.reset();
+            showModal(
+                '¡Mensaje Enviado al SAPI!',
+                `Hemos recibido tu mensaje con el folio ${folio}. El equipo del Sistema de Atención a Partes Interesadas (SAPI) dará seguimiento a tu solicitud.`
+            );
+        }
+
+        // Asistente SAPI Logic
+        function toggleSapiChat() {
+            const win = document.getElementById('sapi-chat-window');
+            if (win.classList.contains('hidden')) {
+                win.classList.remove('hidden');
+                win.classList.add('flex');
+                document.getElementById('sapi-chat-input').focus();
+            } else {
+                win.classList.add('hidden');
+                win.classList.remove('flex');
+            }
+        }
+
+        function askQuickQuestion(text) {
+            document.getElementById('sapi-chat-input').value = text;
+            handleChatSubmit(new Event('submit'));
+        }
+
+        async function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('sapi-chat-input');
+            const question = input.value.trim();
+            if (!question) return;
+
+            const box = document.getElementById('sapi-chat-messages');
+            box.innerHTML += `
+                <div class="flex justify-end">
+                    <div class="bg-amber-400 text-slate-950 font-semibold p-3 rounded-2xl rounded-tr-none max-w-[85%] shadow-xs">
+                        ${escapeHtml(question)}
+                    </div>
+                </div>
+            `;
+            input.value = '';
+            box.scrollTop = box.scrollHeight;
+
+            const loadingId = 'typing-' + Date.now();
+            box.innerHTML += `
+                <div id="${loadingId}" class="flex justify-start">
+                    <div class="bg-white text-slate-500 p-3 rounded-2xl rounded-tl-none border border-sky-100 shadow-xs italic">
+                        SAPI está escribiendo...
+                    </div>
+                </div>
+            `;
+            box.scrollTop = box.scrollHeight;
+
+            const reply = await getSapiAssistantReply(question);
+            const typingEl = document.getElementById(loadingId);
+            if (typingEl) typingEl.remove();
+
+            box.innerHTML += `
+                <div class="flex justify-start">
+                    <div class="bg-white text-slate-800 p-3 rounded-2xl rounded-tl-none border border-sky-100 max-w-[88%] shadow-xs leading-relaxed">
+                        ${reply}
+                    </div>
+                </div>
+            `;
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        async function getSapiAssistantReply(userQuery) {
+            const systemPrompt = `Eres SAPI (Sistema de Atención a Partes Interesadas) de la Planta Solar Cerro Colorado (Fisterra Energy), ubicada en Sayula de Alemán y Texistepec, Veracruz. Responde de manera muy cálida, sencilla, clara y en español.
+Datos clave:
+- SAPI significa: Sistema de Atención a Partes Interesadas.
+- Accesibilidad comunitaria: Si alguien no sabe llenar formularios o tiene sus datos escritos a mano en una hoja, puede usar la "Opción 1: Registro Rápido / Foto" en la pestaña "Quiero Trabajar" y subir solo su nombre, teléfono y una foto de su INE o de su hoja escrita a mano, o llamar/enviar WhatsApp al 924 242 2743 para que le ayuden.
+- Capacidad: 488 MWac / 621.17 MWp (941,166 paneles bifaciales LONGI), almacenamiento de baterías SAEE de 496.5 MWh (97 contenedores), 3 subestaciones elevadoras y línea de transmisión de 21.9 km hacia El Juile.
+- Esquema mixto: Fisterra Energy construye (años 0-2, inversión $8,084 MDP) y opera conjuntamente con CFE (hasta año 17), luego la planta pasa 100% a manos de CFE hasta el año 37.
+- Empleos: 600 directos y 465 indirectos en construcción (1,065 totales) + 1,175 inducidos. Todos los trámites son 100% gratuitos.
+- Plan de Gestión Social (PGS): $72.6 MDP totales ($50.82 MDP en 10 Beneficios Sociales Compartidos acordados con el CEGeL).`;
+
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: userQuery }] }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] }
+                    })
+                });
+                if (!response.ok) throw new Error('API fallback');
+                const data = await response.json();
+                const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (text) {
+                    return escapeHtml(text).replace(/\n/g, '<br>');
+                }
+                throw new Error('Empty response');
+            } catch (err) {
+                const q = userQuery.toLowerCase();
+                if (q.includes('ayuda') || q.includes('formulari') || q.includes('mano') || q.includes('trabaj')) {
+                    return '¡Es muy fácil! Entra a <strong>Quiero Trabajar</strong> y usa el <strong>Registro Rápido / Foto</strong>: solo escribe tu nombre y teléfono, y si quieres toma una foto con tu celular a tu INE o a tus datos escritos a mano en una hoja. También puedes llamarnos al <strong>924 242 2743</strong>.';
+                }
+                if (q.includes('proveed') || q.includes('empresa') || q.includes('negocio')) {
+                    return 'Para inscribir tu negocio entra a <strong>Soy Proveedor</strong> y déjanos el nombre de tu comercio, giro y teléfono de contacto.';
+                }
+                if (q.includes('empleo') || q.includes('vacante')) {
+                    return 'La Planta Solar Cerro Colorado generará <strong>1,065 empleos directos e indirectos</strong> durante sus 2 años de construcción en Sayula de Alemán y Texistepec.';
+                }
+                return 'Con gusto te apoyamos desde el <strong>Sistema de Atención a Partes Interesadas (SAPI)</strong>. Puedes llamarnos o escribirnos por WhatsApp al <strong>924 242 2743</strong> o dejar tu teléfono en el Buzón SAPI.';
+            }
+        }
+
+        // Input Validations
+        function validateCURPInput(input) {
+            input.value = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            const feedback = document.getElementById('curp-feedback');
+            const curpRegex = /^[A-Z]{4}\d{6}[HM][A-Z]{5}[0-9A-Z]\d$/;
+            if (input.value.length === 18) {
+                if (curpRegex.test(input.value)) {
+                    feedback.textContent = '✓ Formato de CURP válido.';
+                    feedback.className = 'text-xs mt-1 text-emerald-600 font-bold';
+                } else {
+                    feedback.textContent = '⚠ Revisa que sean 18 caracteres.';
+                    feedback.className = 'text-xs mt-1 text-amber-700 font-bold';
+                }
+            } else {
+                feedback.textContent = `${input.value.length}/18 caracteres ingresados.`;
+                feedback.className = 'text-xs mt-1 text-slate-600';
+            }
+        }
+
+        function validatePhoneInput(input) {
+            input.value = input.value.replace(/\D/g, '');
+            const feedback = document.getElementById('phone-feedback');
+            if (input.value.length === 10) {
+                feedback.textContent = '✓ Teléfono a 10 dígitos listo.';
+                feedback.className = 'text-xs mt-1 text-emerald-600 font-bold';
+            } else {
+                feedback.textContent = `${input.value.length}/10 dígitos.`;
+                feedback.className = 'text-xs mt-1 text-slate-600';
+            }
+        }
+
+        function updateFileLabel(input, labelId) {
+            const label = document.getElementById(labelId);
+            if (input.files && input.files[0]) {
+                label.textContent = '✓ Listo: ' + input.files[0].name;
+                label.className = 'text-xs font-extrabold text-emerald-700 truncate max-w-full px-1';
+            }
+        }
+
+        // Form Submissions
+        function handleWorkerSubmit(e) {
+            e.preventDefault();
+            const curpVal = document.getElementById('w-curp').value.trim().toUpperCase() || 'PENDIENTE-CAPTURA';
+            const easyFile = document.getElementById('w-doc-easy').files[0];
+            const docsList = workerRegMode === 'easy'
+                ? [easyFile ? `Foto_Comunitaria_${easyFile.name}` : 'Registro_Asistido_SAPI']
+                : ['INE_Cargada.pdf', 'CURP_Cargada.pdf', 'Comprobante_Cargado.pdf'];
+
+            const newWorker = {
+                id: 'CC-W0' + (workers.length + 1),
+                name: document.getElementById('w-name').value.trim(),
+                curp: curpVal,
+                phone: document.getElementById('w-phone').value.trim(),
+                municipality: document.getElementById('w-municipality').value,
+                trade: document.getElementById('w-trade').value,
+                status: 'Pendiente',
+                docs: docsList,
+                updatedAt: new Date().toLocaleDateString('es-MX')
+            };
+            workers.unshift(newWorker);
+            addAuditLog(`Nuevo registro (${workerRegMode === 'easy' ? 'Modo Fácil/Foto' : 'Completo'}): ${newWorker.name} (${newWorker.municipality})`);
+            e.target.reset();
+            ['lbl-ine', 'lbl-curp', 'lbl-addr'].forEach(id => {
+                const el = document.getElementById(id);
+                el.textContent = 'Tomar Foto o Subir';
+                el.className = 'text-xs font-bold text-amber-800';
+            });
+            const lblEasy = document.getElementById('lbl-easy');
+            lblEasy.textContent = 'Toca aquí para tomar foto o elegir archivo';
+            lblEasy.className = 'text-sm font-extrabold text-sky-800';
+
+            showModal(
+                '¡Tus Datos Fueron Recibidos!',
+                `Folio ${newWorker.id} asignado a ${newWorker.name}. Puedes revisar cómo va tu solicitud en la sección "Ver Mi Trámite" usando tu teléfono (${newWorker.phone}).`
+            );
+        }
+
+        function handleSupplierSubmit(e) {
+            e.preventDefault();
+            const newSupplier = {
+                id: 'CC-S0' + (suppliers.length + 1),
+                company: document.getElementById('s-company').value.trim(),
+                rfc: document.getElementById('s-rfc').value.trim().toUpperCase() || 'EN-TRAMITE',
+                sector: document.getElementById('s-sector').value,
+                contact: document.getElementById('s-contact').value.trim(),
+                phone: document.getElementById('s-phone').value.trim(),
+                email: document.getElementById('s-email').value.trim() || 'Sin correo',
+                status: 'Pendiente',
+                docs: ['Expediente_Proveedor'],
+                updatedAt: new Date().toLocaleDateString('es-MX')
+            };
+            suppliers.unshift(newSupplier);
+            addAuditLog(`Nuevo registro de proveedor: ${newSupplier.company}`);
+            e.target.reset();
+            ['lbl-csf', 'lbl-sat', 'lbl-cat'].forEach(id => {
+                const el = document.getElementById(id);
+                el.textContent = 'Subir PDF o Foto';
+                el.className = 'text-xs font-bold text-sky-800';
+            });
+            showModal(
+                '¡Negocio Registrado con Éxito!',
+                `Folio ${newSupplier.id} registrado para ${newSupplier.company}. Nuestro equipo se comunicará al teléfono ${newSupplier.phone}.`
+            );
+        }
+
+        // Status Checker
+        function fillDemoSearch(val) {
+            document.getElementById('search-query').value = val;
+            checkRegistrationStatus(new Event('submit'));
+        }
+
+        function checkRegistrationStatus(e) {
+            e.preventDefault();
+            const q = document.getElementById('search-query').value.trim().toUpperCase();
+            const card = document.getElementById('search-result-card');
+            const notFound = document.getElementById('search-not-found');
+
+            const wMatch = workers.find(w => w.curp === q || w.phone === q);
+            const sMatch = suppliers.find(s => s.rfc === q || s.phone === q);
+
+            if (wMatch) {
+                document.getElementById('res-type').textContent = 'Bolsa de Trabajo • Trabajador';
+                document.getElementById('res-name').textContent = wMatch.name;
+                document.getElementById('res-detail').textContent = `Folio: ${wMatch.id} • ${wMatch.trade} • ${wMatch.municipality}`;
+                document.getElementById('res-badge').textContent = wMatch.status;
+                document.getElementById('res-date').textContent = wMatch.updatedAt;
+                card.classList.remove('hidden');
+                notFound.classList.add('hidden');
+            } else if (sMatch) {
+                document.getElementById('res-type').textContent = 'Proveeduría Local • Negocio';
+                document.getElementById('res-name').textContent = sMatch.company;
+                document.getElementById('res-detail').textContent = `Folio: ${sMatch.id} • ${sMatch.sector}`;
+                document.getElementById('res-badge').textContent = sMatch.status;
+                document.getElementById('res-date').textContent = sMatch.updatedAt;
+                card.classList.remove('hidden');
+                notFound.classList.add('hidden');
+            } else {
+                card.classList.add('hidden');
+                notFound.classList.remove('hidden');
+            }
+        }
+
+        // Backoffice Functions
+        function renderAdminTables() {
+            const munFilter = document.getElementById('filter-w-mun').value;
+            const wStatusFilter = document.getElementById('filter-w-status').value;
+            const sStatusFilter = document.getElementById('filter-s-status').value;
+
+            const filteredWorkers = workers.filter(w => {
+                return (!munFilter || w.municipality === munFilter) &&
+                       (!wStatusFilter || w.status === wStatusFilter);
+            });
+
+            const filteredSuppliers = suppliers.filter(s => {
+                return !sStatusFilter || s.status === sStatusFilter;
+            });
+
+            document.getElementById('kpi-workers').textContent = workers.length;
+            document.getElementById('kpi-suppliers').textContent = suppliers.length;
+            const approvedCount = workers.filter(w => w.status === 'Apto' || w.status === 'Contratado').length +
+                                  suppliers.filter(s => s.status === 'Aprobado').length;
+            const pendingCount = workers.filter(w => w.status === 'Pendiente' || w.status === 'En revisión').length +
+                                 suppliers.filter(s => s.status === 'Pendiente' || s.status === 'En revisión').length;
+            document.getElementById('kpi-approved').textContent = approvedCount;
+            document.getElementById('kpi-pending').textContent = pendingCount;
+
+            const wBody = document.getElementById('admin-workers-tbody');
+            wBody.innerHTML = filteredWorkers.map(w => `
+                <tr class="hover:bg-sky-50/40 transition">
+                    <td class="py-3 px-4">
+                        <p class="font-bold text-slate-900">${w.name}</p>
+                        <p class="text-xs font-mono text-slate-500">${w.curp} • ${w.phone}</p>
+                    </td>
+                    <td class="py-3 px-4 text-xs text-slate-700">${w.municipality}</td>
+                    <td class="py-3 px-4 text-xs font-semibold text-slate-800">${w.trade}</td>
+                    <td class="py-3 px-4">
+                        <span class="inline-flex items-center gap-1 text-xs bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-1 rounded-lg font-medium">
+                            <i class="fa-solid fa-paperclip text-amber-600"></i> ${w.docs.join(', ')}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4">
+                        <span class="px-2.5 py-1 rounded-full text-xs font-bold ${getStatusColor(w.status)}">${w.status}</span>
+                    </td>
+                    <td class="py-3 px-4 text-right">
+                        <select onchange="updateWorkerStatus('${w.id}', this.value)" class="text-xs border border-slate-300 rounded-lg px-2 py-1.5 bg-white">
+                            <option value="Pendiente" ${w.status === 'Pendiente' ? 'selected' : ''}>Pendiente</option>
+                            <option value="En revisión" ${w.status === 'En revisión' ? 'selected' : ''}>En revisión</option>
+                            <option value="Apto" ${w.status === 'Apto' ? 'selected' : ''}>Apto</option>
+                            <option value="Contratado" ${w.status === 'Contratado' ? 'selected' : ''}>Contratado</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('');
+
+            const sBody = document.getElementById('admin-suppliers-tbody');
+            sBody.innerHTML = filteredSuppliers.map(s => `
+                <tr class="hover:bg-sky-50/40 transition">
+                    <td class="py-3 px-4">
+                        <p class="font-bold text-slate-900">${s.company}</p>
+                        <p class="text-xs font-mono text-slate-500">${s.rfc}</p>
+                    </td>
+                    <td class="py-3 px-4 text-xs text-slate-700">${s.sector}</td>
+                    <td class="py-3 px-4 text-xs">
+                        <p class="font-semibold text-slate-800">${s.contact}</p>
+                        <p class="text-slate-500">${s.phone}</p>
+                    </td>
+                    <td class="py-3 px-4">
+                        <span class="inline-flex items-center gap-1 text-xs bg-sky-50 text-sky-800 border border-sky-200 px-2.5 py-1 rounded-lg font-medium">
+                            <i class="fa-solid fa-file"></i> ${s.docs.length} adjuntos
+                        </span>
+                    </td>
+                    <td class="py-3 px-4">
+                        <span class="px-2.5 py-1 rounded-full text-xs font-bold ${getStatusColor(s.status)}">${s.status}</span>
+                    </td>
+                    <td class="py-3 px-4 text-right">
+                        <select onchange="updateSupplierStatus('${s.id}', this.value)" class="text-xs border border-slate-300 rounded-lg px-2 py-1.5 bg-white">
+                            <option value="Pendiente" ${s.status === 'Pendiente' ? 'selected' : ''}>Pendiente</option>
+                            <option value="En revisión" ${s.status === 'En revisión' ? 'selected' : ''}>En revisión</option>
+                            <option value="Aprobado" ${s.status === 'Aprobado' ? 'selected' : ''}>Aprobado</option>
+                            <option value="Rechazado" ${s.status === 'Rechazado' ? 'selected' : ''}>Rechazado</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('');
+
+            document.getElementById('audit-log-list').innerHTML = auditLogs.map(log => `
+                <li class="p-2.5 bg-sky-50/50 rounded-xl border border-sky-100">${log}</li>
+            `).join('');
+        }
+
+        function getStatusColor(status) {
+            if (status === 'Apto' || status === 'Contratado' || status === 'Aprobado') return 'bg-emerald-100 text-emerald-800';
+            if (status === 'En revisión') return 'bg-sky-100 text-sky-800';
+            if (status === 'Rechazado') return 'bg-rose-100 text-rose-800';
+            return 'bg-amber-100 text-amber-800';
+        }
+
+        function updateWorkerStatus(id, newStatus) {
+            const w = workers.find(item => item.id === id);
+            if (w) {
+                w.status = newStatus;
+                w.updatedAt = new Date().toLocaleDateString('es-MX');
+                addAuditLog(`Equipo Fisterra cambió estatus de ${w.name} (${w.id}) a "${newStatus}".`);
+                renderAdminTables();
+            }
+        }
+
+        function updateSupplierStatus(id, newStatus) {
+            const s = suppliers.find(item => item.id === id);
+            if (s) {
+                s.status = newStatus;
+                s.updatedAt = new Date().toLocaleDateString('es-MX');
+                addAuditLog(`Equipo Fisterra cambió estatus de ${s.company} (${s.id}) a "${newStatus}".`);
+                renderAdminTables();
+            }
+        }
+
+        function addAuditLog(text) {
+            const now = new Date();
+            const stamp = `${now.toLocaleDateString('es-MX')} ${now.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}`;
+            auditLogs.unshift(`${stamp} - ${text}`);
+        }
+
+        // Modal Helpers
+        function showModal(title, msg) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-msg').textContent = msg;
+            const modal = document.getElementById('custom-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('custom-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Global State & Data Initialization
+        let workers = [
+            { id: 'CC-W01', name: 'Juan Carlos Hernández Reyes', curp: 'HERA850412HVZRR01', phone: '9241112233', municipality: 'Sayula de Alemán', trade: 'Albañil / Fierrero', status: 'Apto', docs: ['INE.jpg', 'CURP.pdf', 'Domicilio.jpg'], updatedAt: '15/11/2026' },
+            { id: 'CC-W02', name: 'María Guadalupe Vázquez López', curp: 'PENDIENTE-CAPTURA', phone: '9242223344', municipality: 'San Isidro (Sayula)', trade: 'Ayudante General', status: 'Pendiente', docs: ['Foto_Hoja_Escrita_Mano.jpg'], updatedAt: '16/11/2026' }
+        ];
+
+        let suppliers = [
+            { id: 'CC-S01', name: 'Materiales y Construcciones del Istmo', company: 'Materiales y Construcciones del Istmo', rfc: 'MCI210514KL9', sector: 'Materiales de Construcción / Agregados', contact: 'Ing. Laura Gómez', phone: '9243334455', email: 'contacto@materialesistmo.com', status: 'Aprobado', docs: ['csf.pdf', 'sat.pdf', 'cat.pdf'], updatedAt: '15/11/2026' }
+        ];
+
+        let auditLogs = [
+            '16/11/2026 08:30 - Plataforma Comunitaria Cerro Colorado Solar inicializada.',
+            '15/11/2026 12:00 - Carga de registros de muestra (incluyendo registro con hoja escrita a mano).'
+        ];
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            const targetTab = document.getElementById(tabId);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+
+            const targetBtn = document.querySelector(`[data-target="${tabId}"]`);
+            if (targetBtn) {
+                targetBtn.classList.add('active');
+            }
+
+            if (tabId === 'backoffice') {
+                renderAdminTables();
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.onload = function() {
+            renderAdminTables();
+            startProjectReel();
+        };
+    </script>
+</body>
+</html>
